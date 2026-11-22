@@ -4,7 +4,6 @@
 
   const loadTimeout = 90000;
   const caseTimeout = 6000;
-  let active = null;
 
   function startInterpreter() {
     const base = "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/";
@@ -95,60 +94,66 @@ _studio_main()
 
   const workerSource = new Blob(["(", startInterpreter.toString(), ")();"], { type: "text/javascript" });
 
-  function stop() {
-    if (active) active.abort();
-  }
+  function createRunner() {
+    let active = null;
 
-  async function run(code, inputs, onStatus = () => {}) {
-    stop();
-    const session = new AbortController();
-    active = session;
-    const url = URL.createObjectURL(workerSource);
-    const results = [];
-    try {
-      for (const [index, input] of inputs.entries()) {
-        const result = await new Promise((resolve, reject) => {
-          const worker = new Worker(url);
-          let timer;
-          const abort = () => finish(null, new DOMException("Run stopped.", "AbortError"));
-          function finish(result, error) {
-            clearTimeout(timer);
-            session.signal.removeEventListener("abort", abort);
-            worker.terminate();
-            if (error) reject(error);
-            else resolve(result);
-          }
-          session.signal.addEventListener("abort", abort, { once: true });
-          worker.onerror = event => {
-            event.preventDefault();
-            finish(null, new Error(event.message || "The Python worker failed to start."));
-          };
-          worker.onmessage = ({ data }) => {
-            if (data.type === "running") {
-              clearTimeout(timer);
-              timer = setTimeout(() => finish(null, new Error("Time limit exceeded (6 seconds). Check your loops and recursive calls.")), caseTimeout);
-              onStatus("running", index);
-            } else if (data.type === "limit") {
-              finish(null, new Error("Output limit exceeded (64 KiB). Check your print statements."));
-            } else if (data.type === "unavailable") {
-              finish(null, new Error(data.message));
-            } else if (data.type === "done") {
-              finish(data.result);
-            }
-          };
-          timer = setTimeout(() => finish(null, new Error("Python took too long to load. Check your connection and retry.")), loadTimeout);
-          onStatus("loading", index);
-          if (session.signal.aborted) return abort();
-          worker.postMessage({ code, input });
-        });
-        results.push(result);
-      }
-      return results;
-    } finally {
-      URL.revokeObjectURL(url);
-      if (active === session) active = null;
+    function stop() {
+      if (active) active.abort();
     }
+
+    async function run(code, inputs, onStatus = () => {}) {
+      stop();
+      const session = new AbortController();
+      active = session;
+      const url = URL.createObjectURL(workerSource);
+      const results = [];
+      try {
+        for (const [index, input] of inputs.entries()) {
+          const result = await new Promise((resolve, reject) => {
+            const worker = new Worker(url);
+            let timer;
+            const abort = () => finish(null, new DOMException("Run stopped.", "AbortError"));
+            function finish(result, error) {
+              clearTimeout(timer);
+              session.signal.removeEventListener("abort", abort);
+              worker.terminate();
+              if (error) reject(error);
+              else resolve(result);
+            }
+            session.signal.addEventListener("abort", abort, { once: true });
+            worker.onerror = event => {
+              event.preventDefault();
+              finish(null, new Error(event.message || "The Python worker failed to start."));
+            };
+            worker.onmessage = ({ data }) => {
+              if (data.type === "running") {
+                clearTimeout(timer);
+                timer = setTimeout(() => finish(null, Object.assign(new Error("Time limit exceeded (6 seconds). Check your loops and recursive calls."), {name: "ExecutionLimit"})), caseTimeout);
+                onStatus("running", index);
+              } else if (data.type === "limit") {
+                finish(null, Object.assign(new Error("Output limit exceeded (64 KiB). Check your print statements."), {name: "ExecutionLimit"}));
+              } else if (data.type === "unavailable") {
+                finish(null, new Error(data.message));
+              } else if (data.type === "done") {
+                finish(data.result);
+              }
+            };
+            timer = setTimeout(() => finish(null, new Error("Python took too long to load. Check your connection and retry.")), loadTimeout);
+            onStatus("loading", index);
+            if (session.signal.aborted) return abort();
+            worker.postMessage({ code, input });
+          });
+          results.push(result);
+        }
+        return results;
+      } finally {
+        URL.revokeObjectURL(url);
+        if (active === session) active = null;
+      }
+    }
+
+    return {run, stop};
   }
 
-  window.PythonRunner = Object.freeze({ run, stop });
+  window.PythonRunner = Object.freeze({...createRunner(), create: createRunner});
 })();

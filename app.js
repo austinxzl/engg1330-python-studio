@@ -11,7 +11,8 @@ const units = [
   ['L7', 'Mutation & aliasing', '可变对象与别名', 'Follow references and track in-place changes.', '追踪引用，理解原地修改。', 'link', '#477989', '#e9f3f4'],
   ['L8', 'Search & sorting', '查找与排序', 'Trace comparisons, swaps and search paths.', '跟踪比较、交换和查找过程。', 'sort', '#8d6b72', '#f5ecee'],
   ['L9', 'Recursion & merge sort', '递归与归并排序', 'Break problems into smaller calls and merge results.', '拆解递归调用并合并结果。', 'tree', '#657e58', '#edf2e9'],
-  ['M', 'Mixed practice', '综合练习', 'Trace programs, repair bugs and combine lecture topics.', '追踪程序、修复错误，综合运用不同讲次的知识。', 'grid', '#6754a3', '#efebf7']
+  ['M', 'Mixed practice', '综合练习', 'Trace programs, repair bugs and combine lecture topics.', '追踪程序、修复错误，综合运用不同讲次的知识。', 'grid', '#6754a3', '#efebf7'],
+  ['C', 'Full-course review', '全课程综合题', 'An integrated problem spanning Lectures 2–9.', '一道融合第 2 至 9 讲的综合题。', 'book', '#6754a3', '#efebf7']
 ];
 const svgPaths = {
   book: '<path d="M3 5c3-1 6-1 9 1 3-2 6-2 9-1v14c-3-1-6-1-9 1-3-2-6-2-9-1zM12 6v14"/>',
@@ -48,7 +49,7 @@ function theme(u){return '--accent:'+u[6]+';--tint:'+u[7];}
 function setFooter(){document.querySelector('#footnote').textContent=storageOK?t('Progress saved on this device','进度保存在此设备'):t('Device storage unavailable · session only','本地存储不可用，本次会话内有效');}
 function chrome(active){
   document.documentElement.lang=zh?'zh-CN':'en';
-  const navs=[['library','book',t('Practice library','练习题库')],['progress','chart',t('My progress','学习进度')]];
+  const navs=[['library','book',t('Practice library','练习题库')],['exams','grid',t('Mock exams','模拟考试')],['progress','chart',t('My progress','学习进度')]];
   document.querySelector('#nav').innerHTML=navs.map(([id,ic,label])=>'<a href="#'+id+'" '+(active===id?'aria-current="page"':'')+'>'+icon(ic,17)+label+'</a>').join('');
   const lang=document.querySelector('#language');
   lang.innerHTML=icon('translate')+'<span>'+t('中文','English')+'</span>';
@@ -63,8 +64,8 @@ function courseCard(u){
 function statsLink(){return '<a class="library-progress" href="#progress">'+icon('chart',18)+solvedCount(bank)+' / '+bank.length+' '+t('solved','已完成')+'</a>';}
 function library(mixed){
   chrome('library');
-  main.innerHTML='<section class="hero"><div class="hero-art" aria-hidden="true"></div><div class="hero-content"><div class="course-label"><span>ENGG1330</span><i></i>'+t('Computer Programming I','计算机程序设计 I')+'</div><h1>'+t('Python practice<br><em>studio.</em>','Python <em>练习室</em>')+'</h1><p>'+t('Work through each lecture, write Python and test your solutions.','按讲次温习，在网页中编写 Python 并测试答案。')+'</p><a class="start" href="#exercise/'+resume().id+'">'+icon('play',17)+(last?t('Resume practice','继续练习'):t('Start practicing','开始练习'))+'</a></div></section>'+
-  '<section class="library-block" id="collection"><div class="section-head"><div><h2>'+t('Practice library','练习题库')+'</h2><p>'+t('8 lectures','8 讲')+' <b>·</b> '+ bank.length+t(' original exercises',' 道原创练习')+'</p></div>'+statsLink()+'</div><div class="segmented"><a href="#library" '+(!mixed?'aria-current="true"':'')+'>'+icon('book',16)+t('Lecture sets','分讲练习')+'</a><a href="#mixed" '+(mixed?'aria-current="true"':'')+'>'+icon('grid',15)+t('Mixed practice','综合练习')+'</a></div>'+
+  main.innerHTML='<section class="hero"><div class="hero-art" aria-hidden="true"></div><div class="hero-content"><div class="course-label"><span>ENGG1330</span><i></i>'+t('Computer Programming I','计算机程序设计 I')+'</div><h1>'+t('Python practice<br><em>studio.</em>','Python <em>练习室</em>')+'</h1><p>'+t('Work through each lecture, write Python and test your solutions.','按讲次温习，在网页中编写 Python 并测试答案。')+'</p><a class="start" href="#exercise/'+resume().id+'">'+icon('play',17)+(last?t('Resume practice','继续练习'):t('Start practicing','开始练习'))+'</a><a class="hero-review" href="#review">'+t('Course review','总复习')+'</a></div></section>'+
+  '<section class="library-block" id="collection"><div class="section-head"><div><h2>'+t('Practice library','练习题库')+'</h2><p>'+t('8 lectures','8 讲')+' <b>·</b> '+ bank.length+t(' original exercises',' 道原创练习')+'</p></div>'+statsLink()+'</div><div class="segmented"><a href="#library" '+(!mixed?'aria-current="true"':'')+'>'+icon('book',16)+t('Lecture sets','分讲练习')+'</a><a href="#mixed" '+(mixed?'aria-current="true"':'')+'>'+icon('grid',15)+t('Mixed practice','综合练习')+'</a><a href="#review">'+icon('layers',16)+t('Course review','总复习')+'</a></div>'+
   (mixed?'<div class="question-list">'+questionRows(byUnit('M'))+'</div>':'<div class="course-grid">'+units.slice(0,8).map(courseCard).join('')+'</div>')+'</section>';
 }
 function questionRows(qs){return qs.map((q,i)=>'<a class="qrow" href="#exercise/'+q.id+'"><span class="qno '+(solved.has(q.id)?'complete':'')+'">'+(solved.has(q.id)?icon('check',18):String(i+1).padStart(2,'0'))+'</span><span class="qbody"><strong>'+esc(zh?q.titleZh:q.title)+'</strong><small>'+esc(zh?q.topicZh:q.topic)+'</small></span><span class="level '+q.level.toLowerCase()+'">'+levelName(q.level)+'</span><span class="row-play">'+icon('play',17)+'</span></a>').join('');}
@@ -82,15 +83,20 @@ function render(scroll=true){
   if(window.PythonRunner) window.PythonRunner.stop();
   const q=bank.find(q=>q.id===id),u=unitById(id);
   main.className='site-main';
-  if(page==='exercise'&&q){
+  if(page==='exams'||page==='exam'){
+    chrome('exams');
+    window.MockExams.render(page,id,location.hash.split('/')[2]);
+  }else if(page==='review'||(page==='unit'&&id==='C')){
+    courseReview();
+  }else if(page==='exercise'&&q){
     chrome('library');main.className+=' exercise-page';last=q.id;save('last',last);
     const group=unitById(q.unit),next=byUnit(q.unit)[byUnit(q.unit).indexOf(q)+1];
     if(!editorState.has(q.id)) editorState.set(q.id,{});
-    window.renderExercise(q,{zh,draft:drafts[q.id]??q.starter,solved:solved.has(q.id),ui:editorState.get(q.id),groupUrl:'#unit/'+q.unit,nextUrl:next?'#exercise/'+next.id:null,groupName:names(group),saveDraft(code){drafts[q.id]=code;save('drafts',drafts);},markSolved(){solved.add(q.id);save('solved',[...solved]);}});
+    window.renderExercise(q,{zh,draft:drafts[q.id]??q.starter,solved:solved.has(q.id),ui:editorState.get(q.id),groupUrl:q.recap||q.unit==='C'?'#review':'#unit/'+q.unit,nextUrl:q.recap&&q.unit!=='L9'?'#exercise/L'+(Number(q.unit.slice(1))+1)+'-10':next?'#exercise/'+next.id:null,groupName:q.recap||q.unit==='C'?t('Course review','总复习'):names(group),saveDraft(code){drafts[q.id]=code;save('drafts',drafts);},markSolved(){solved.add(q.id);save('solved',[...solved]);}});
   }else if(page==='unit'&&u)unitPage(u);
   else if(page==='progress')progress();
   else library(page==='mixed');
-  document.title=(page==='exercise'&&q?(zh?q.titleZh:q.title)+' · ':'')+'PyStudio · ENGG1330';
+  document.title=(page==='exercise'&&q?(zh?q.titleZh:q.title)+' · ':page==='exams'||page==='exam'?t('Mock exams','模拟考试')+' · ':'')+'PyStudio · ENGG1330';
   if(scroll) window.scrollTo(0,0);
 }
 document.querySelector('#language').onclick=()=>{zh=!zh;save('zh',zh);render(false);};

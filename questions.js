@@ -193,6 +193,184 @@ window.QUESTIONS = [
     "topicZh": "向下整除"
   },
   {
+    "id": "L2-6",
+    "unit": "L2",
+    "title": "Scale the pulse",
+    "titleZh": "脉冲缩放",
+    "en": "Read an integer A and a positive integer B on separate lines. Print the integer part of A / B after truncation toward zero. Both inputs have absolute value at most 1000.",
+    "zh": "分两行读入整数 A 和正整数 B，绝对值均不超过 1000。输出 A / B 朝零截断后的整数。",
+    "hint": "Compare int(-1.8) with -2.",
+    "hintZh": "想一想 int(-1.8) 的值。",
+    "level": "Easy",
+    "topic": "Numeric conversion",
+    "topicZh": "数值转换",
+    "starter": "a = int(input())\nb = int(input())\n# Write your solution here.\n",
+    "solution": "a = int(input())\nb = int(input())\nprint(int(a / b))\n",
+    "tests": [
+      {
+        "input": "13\n4",
+        "output": "3"
+      },
+      {
+        "input": "-13\n4",
+        "output": "-3"
+      },
+      {
+        "input": "-3\n8",
+        "output": "0"
+      },
+      {
+        "input": "0\n2",
+        "output": "0"
+      },
+      {
+        "input": "12\n3",
+        "output": "4"
+      }
+    ]
+  },
+  {
+    "id": "L2-7",
+    "unit": "L2",
+    "title": "Overlap on a rail",
+    "titleZh": "导轨区间重叠",
+    "en": "The occupied sections of a rail are [a, b] and [c, d], with a ≤ b and c ≤ d. Read a, b, c and d as integers on four lines. Print OVERLAP for a common segment of positive length, TOUCH for exactly one common point, or CLEAR otherwise.",
+    "zh": "两个占用区段分别为闭区间 [a, b] 和 [c, d]，满足 a ≤ b、c ≤ d。四行依次输入整数 a、b、c、d。公共区段长度为正时输出 OVERLAP，仅有一个公共点时输出 TOUCH，无交集时输出 CLEAR。",
+    "hint": "Compare the later starting point with the earlier ending point.",
+    "hintZh": "比较两个起点中较大的值和两个终点中较小的值。",
+    "level": "Medium",
+    "topic": "Interval decisions",
+    "topicZh": "区间判断",
+    "starter": "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\n# Write your solution here.\n",
+    "solution": "a = int(input())\nb = int(input())\nc = int(input())\nd = int(input())\nleft = max(a, c)\nright = min(b, d)\nif left < right:\n    print('OVERLAP')\nelif left == right:\n    print('TOUCH')\nelse:\n    print('CLEAR')\n",
+    "tests": [
+      {
+        "input": "2\n9\n5\n7",
+        "output": "OVERLAP"
+      },
+      {
+        "input": "2\n5\n5\n8",
+        "output": "TOUCH"
+      },
+      {
+        "input": "-8\n-4\n0\n3",
+        "output": "CLEAR"
+      },
+      {
+        "input": "6\n6\n4\n8",
+        "output": "TOUCH"
+      }
+    ]
+  },
+  {
+    "id": "L2-8",
+    "unit": "L2",
+    "title": "Choose a winding",
+    "titleZh": "选择线圈",
+    "en": "Read three positive integers V, A and B on separate lines. Two resistors A and B may be connected in series (resistance A+B) or in parallel (resistance A*B/(A+B)). Find the connection that makes the resistance closer to V. Print SERIES, PARALLEL or TIE. Compare the distances exactly.",
+    "zh": "三行依次输入正整数 V、A、B。电阻 A、B 串联时阻值为 A+B，并联时为 A*B/(A+B)。哪种连接的阻值更接近 V？输出 SERIES、PARALLEL 或 TIE。须精确比较距离。",
+    "hint": "Multiply both distances by the same positive denominator before comparing.",
+    "hintZh": "先把两个距离都乘以同一个正分母再比较。",
+    "level": "Medium",
+    "topic": "Operator precedence",
+    "topicZh": "运算优先级",
+    "starter": "v = int(input())\na = int(input())\nb = int(input())\n# Write your solution here.\n",
+    "solution": "v = int(input())\na = int(input())\nb = int(input())\nden = a + b\nseries = abs(v - den) * den\nparallel = abs(v * den - a * b)\nif series < parallel:\n    print('SERIES')\nelif series > parallel:\n    print('PARALLEL')\nelse:\n    print('TIE')\n",
+    "tests": [
+      {
+        "input": "7\n2\n6",
+        "output": "SERIES"
+      },
+      {
+        "input": "1\n2\n6",
+        "output": "PARALLEL"
+      },
+      {
+        "input": "5\n4\n4",
+        "output": "TIE"
+      },
+      {
+        "input": "3\n7\n1",
+        "output": "PARALLEL"
+      }
+    ]
+  },
+  {
+    "id": "L2-9",
+    "unit": "L2",
+    "title": "Unpack a panel code",
+    "titleZh": "拆解面板编号",
+    "en": "Read one integer between 100 and 999. Its middle digit is a selector. If the selector is even, print the sum of the first and last digits. Otherwise print their product.",
+    "zh": "读入一个 100 到 999 的整数。十位是选择器。若十位为偶数，输出百位和个位之和；否则输出它们的乘积。",
+    "hint": "Integer division by 10 removes the last digit.",
+    "hintZh": "整除 10 会去掉末位数字。",
+    "level": "Easy",
+    "topic": "Digit extraction",
+    "topicZh": "提取十进制位",
+    "starter": "code = int(input())\n# Write your solution here.\n",
+    "solution": "code = int(input())\nfirst = code // 100\nmiddle = code // 10 % 10\nlast = code % 10\nprint(first + last if middle % 2 == 0 else first * last)\n",
+    "tests": [
+      {
+        "input": "427",
+        "output": "11"
+      },
+      {
+        "input": "437",
+        "output": "28"
+      },
+      {
+        "input": "190",
+        "output": "0"
+      },
+      {
+        "input": "100",
+        "output": "1"
+      }
+    ]
+  },
+  {
+    "id": "L2-10",
+    "unit": "L2",
+    "title": "February maintenance ticket",
+    "titleZh": "二月维护工单",
+    "en": "A maintenance ticket gives a year Y (1–9999) and a February day D (1–31), one integer per line. A leap year is divisible by 400, or divisible by 4 but not by 100. Reject a day outside that February with INVALID. For a valid ticket print the month and day of the following day as two integers. Combine the leap-year condition with a separate decision for crossing into March.",
+    "zh": "维护工单分两行给出年份 Y（1–9999）与二月的日期 D（1–31）。能被 400 整除，或能被 4 整除但不能被 100 整除的年份是闰年。若该年二月不存在这一天，输出 INVALID。否则以两个整数输出次日的月份与日。先用布尔条件判断闰年，再决定次日是否跨入三月。",
+    "hint": "Use one variable for the last valid day. Compare D with it before adding one.",
+    "hintZh": "用一个变量记录当年二月的最后一天，给 D 加一之前先比较。",
+    "level": "Medium",
+    "topic": "Recap · Boolean logic and calendar arithmetic",
+    "topicZh": "综合 · 布尔逻辑与日期运算",
+    "starter": "year = int(input())\nday = int(input())\n# Write your solution here.\n",
+    "solution": "year = int(input())\nday = int(input())\nleap = year % 400 == 0 or (year % 4 == 0 and year % 100 != 0)\nlast = 29 if leap else 28\nif day > last:\n    print('INVALID')\nelif day == last:\n    print(3, 1)\nelse:\n    print(2, day + 1)\n",
+    "tests": [
+      {
+        "input": "2000\n28",
+        "output": "2 29"
+      },
+      {
+        "input": "1900\n29",
+        "output": "INVALID"
+      },
+      {
+        "input": "2024\n29",
+        "output": "3 1"
+      },
+      {
+        "input": "2025\n28",
+        "output": "3 1"
+      },
+      {
+        "input": "2025\n1",
+        "output": "2 2"
+      },
+      {
+        "input": "2000\n30",
+        "output": "INVALID"
+      }
+    ],
+    "recap": true
+  },
+  {
     "id": "L3-1",
     "unit": "L3",
     "title": "First rise",
@@ -360,6 +538,172 @@ window.QUESTIONS = [
       }
     ],
     "topicZh": "嵌套循环"
+  },
+  {
+    "id": "L3-6",
+    "unit": "L3",
+    "title": "Pass the inspection",
+    "titleZh": "提前结束检查",
+    "en": "Read N, then N integer readings on separate lines (N ≥ 0). Add consecutive readings from the start until the first negative reading. Print their sum and how many were added, separated by a space. Ignore all later readings.",
+    "zh": "先读数量 N，再分 N 行读整数读数（N ≥ 0）。从头累加，遇到第一个负数就停止。依次输出已加读数之和与已加项数，以空格分隔，忽略其余读数。",
+    "hint": "A zero counts as a reading.",
+    "hintZh": "零也算作一项。",
+    "level": "Easy",
+    "topic": "Loop exits",
+    "topicZh": "提前结束循环",
+    "starter": "n = int(input())\n# Write your solution here.\n",
+    "solution": "n = int(input())\ntotal = count = 0\nfor _ in range(n):\n    value = int(input())\n    if value < 0:\n        break\n    total += value\n    count += 1\nprint(total, count)\n",
+    "tests": [
+      {
+        "input": "5\n2\n0\n7\n-1\n20",
+        "output": "9 3"
+      },
+      {
+        "input": "0",
+        "output": "0 0"
+      },
+      {
+        "input": "2\n-1\n3",
+        "output": "0 0"
+      },
+      {
+        "input": "2\n4\n8",
+        "output": "12 2"
+      }
+    ]
+  },
+  {
+    "id": "L3-7",
+    "unit": "L3",
+    "title": "The missing badge",
+    "titleZh": "缺失的徽章",
+    "en": "Read N ≥ 1 on line 1. The next line lists distinct badge numbers from 1 through N, separated by spaces. It may be blank. Print the smallest missing badge number, or COMPLETE if all are present.",
+    "zh": "第一行读取 N ≥ 1，第二行输入取自 1 至 N 的不重复徽章编号，以空格分隔，该行可以为空。输出最小的缺失编号；若全部存在，输出 COMPLETE。",
+    "hint": "Check candidates in numerical order, regardless of the input order.",
+    "hintZh": "无论输入顺序怎样，都从小到大检查候选编号。",
+    "level": "Easy",
+    "topic": "Membership",
+    "topicZh": "成员检查",
+    "starter": "n = int(input())\npresent = set(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "n = int(input())\npresent = set(map(int, input().split()))\nfor badge in range(1, n + 1):\n    if badge not in present:\n        print(badge)\n        break\nelse:\n    print('COMPLETE')\n",
+    "tests": [
+      {
+        "input": "5\n5 1 4",
+        "output": "2"
+      },
+      {
+        "input": "3\n3 1 2",
+        "output": "COMPLETE"
+      },
+      {
+        "input": "1\n\n",
+        "output": "1"
+      },
+      {
+        "input": "4\n3 2 1",
+        "output": "4"
+      }
+    ]
+  },
+  {
+    "id": "L3-8",
+    "unit": "L3",
+    "title": "Crossing the target",
+    "titleZh": "首次达到目标",
+    "en": "Read a positive target, then a line of space-separated signed integer changes (possibly blank). Starting at zero, apply each change once in order. Print the 1-based index of the first change after which the total is at least the target. Print NEVER if this never occurs.",
+    "zh": "先读正整数目标值，下一行读取空格分隔的整数变化量（可为空）。从零开始按顺序应用每次变化，输出首次使总值达到或超过目标的变化序号（从 1 开始）；若始终未达到，输出 NEVER。",
+    "hint": "Test the total after updating it.",
+    "hintZh": "先更新总值，再检查是否达到目标。",
+    "level": "Medium",
+    "topic": "Running totals",
+    "topicZh": "逐项累加",
+    "starter": "target = int(input())\nchanges = list(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "target = int(input())\nchanges = list(map(int, input().split()))\ntotal = 0\nfor index, change in enumerate(changes, 1):\n    total += change\n    if total >= target:\n        print(index)\n        break\nelse:\n    print('NEVER')\n",
+    "tests": [
+      {
+        "input": "5\n3 -1 3 -9",
+        "output": "3"
+      },
+      {
+        "input": "4\n4 -10",
+        "output": "1"
+      },
+      {
+        "input": "6\n-1 5 1",
+        "output": "NEVER"
+      },
+      {
+        "input": "1\n\n",
+        "output": "NEVER"
+      }
+    ]
+  },
+  {
+    "id": "L3-9",
+    "unit": "L3",
+    "title": "Last active station",
+    "titleZh": "最后一次活跃的站点",
+    "en": "Read N ≥ 0 followed by N one-word station names, one per line. Then read a station to look up. Print its first and last positions in the log (1-based), separated by a space. Print ABSENT if it never appears. Names are case-sensitive.",
+    "zh": "读入 N ≥ 0，接着 N 行各有一个不含空格的站名。最后读入要查询的站名。以空格分隔输出该站第一次和最后一次出现的位置（从 1 开始）。从未出现则输出 ABSENT。区分大小写。",
+    "hint": "Store the first position once, but update the last position every time.",
+    "hintZh": "第一次出现的位置只存一次，每次出现都更新最后位置。",
+    "level": "Medium",
+    "topic": "Dictionary updates",
+    "topicZh": "字典更新",
+    "starter": "n = int(input())\n# Write your solution here.\n",
+    "solution": "n = int(input())\nfirst = {}\nlast = {}\nfor i in range(1, n + 1):\n    name = input()\n    if name not in first:\n        first[name] = i\n    last[name] = i\nquery = input()\nif query in first:\n    print(first[query], last[query])\nelse:\n    print('ABSENT')\n",
+    "tests": [
+      {
+        "input": "4\nA\nB\nA\nC\nA",
+        "output": "1 3"
+      },
+      {
+        "input": "2\na\nA\na",
+        "output": "1 1"
+      },
+      {
+        "input": "0\nX",
+        "output": "ABSENT"
+      },
+      {
+        "input": "3\nR\nQ\nT\nT",
+        "output": "3 3"
+      }
+    ]
+  },
+  {
+    "id": "L3-10",
+    "unit": "L3",
+    "title": "The return counter",
+    "titleZh": "工具归还柜台",
+    "en": "A tool counter starts with no items. Read N ≥ 0, then N lines of the form name delta, where name is a one-word tool name and delta is a nonzero integer. Process entries in order. A positive change adds items. Reject an entire negative change if it would make that tool’s balance negative, otherwise apply it. Print the number of rejected changes, the number of tool names with positive final balances, and the total remaining items on one line. Use the same balance for every occurrence of a name.",
+    "zh": "工具柜台初始为空。先读 N ≥ 0，再读 N 行 name delta，工具名为单个单词，变化量为非零整数。按顺序处理：正数增加库存，负数减少库存。若一次减少会使该工具库存变为负数，则整笔拒绝，否则照常执行。最后一行依次输出被拒笔数、库存仍为正的工具种类数及剩余工具总件数。相同名称须更新同一项余额。",
+    "hint": "Look up the current count before deciding whether the proposed count may replace it.",
+    "hintZh": "先查已有库存，再判断新库存能否替换旧值。",
+    "level": "Medium",
+    "topic": "Recap · loops, dictionaries and conditions",
+    "topicZh": "综合 · 循环、字典与条件",
+    "starter": "n = int(input())\nbalances = {}\n# Write your solution here.\n",
+    "solution": "n = int(input())\nbalances = {}\nrejected = 0\nfor _ in range(n):\n    name, raw_delta = input().split()\n    proposed = balances.get(name, 0) + int(raw_delta)\n    if proposed < 0:\n        rejected += 1\n    else:\n        balances[name] = proposed\nprint(rejected, sum(x > 0 for x in balances.values()), sum(balances.values()))\n",
+    "tests": [
+      {
+        "input": "6\nwrench 3\nbit -1\nwrench -4\nbit 2\nwrench -3\nbit 1",
+        "output": "2 1 3"
+      },
+      {
+        "input": "0",
+        "output": "0 0 0"
+      },
+      {
+        "input": "2\nx 4\nx -4",
+        "output": "0 0 0"
+      },
+      {
+        "input": "3\nx -7\nx 2\ny 3",
+        "output": "1 2 5"
+      }
+    ],
+    "recap": true
   },
   {
     "id": "L4-1",
@@ -535,6 +879,184 @@ window.QUESTIONS = [
     "topicZh": "字符串比较"
   },
   {
+    "id": "L4-6",
+    "unit": "L4",
+    "title": "Count the stencil",
+    "titleZh": "统计模板匹配",
+    "en": "Read a text and a nonempty pattern, one per line. Count the starting positions at which the whole pattern appears in the text, including overlapping occurrences. Matching is case-sensitive; spaces are characters.",
+    "zh": "两行分别读入文本与非空模式串。统计整个模式串出现在文本中的起始位置数，允许匹配重叠。大小写有别，空格也参与匹配。",
+    "hint": "After a match, the next possible start is only one character later.",
+    "hintZh": "匹配一次后，下一个候选起点只往后移一位。",
+    "level": "Medium",
+    "topic": "Overlapping substrings",
+    "topicZh": "可重叠的子串",
+    "starter": "text = input()\npattern = input()\n# Write your solution here.\n",
+    "solution": "text = input()\npattern = input()\ncount = 0\nfor i in range(len(text) - len(pattern) + 1):\n    if text[i:i + len(pattern)] == pattern:\n        count += 1\nprint(count)\n",
+    "tests": [
+      {
+        "input": "ababa\naba",
+        "output": "2"
+      },
+      {
+        "input": "aaaa\naa",
+        "output": "3"
+      },
+      {
+        "input": "AbA\na",
+        "output": "0"
+      },
+      {
+        "input": "\nx",
+        "output": "0"
+      },
+      {
+        "input": "a a a\na a",
+        "output": "2"
+      }
+    ]
+  },
+  {
+    "id": "L4-7",
+    "unit": "L4",
+    "title": "A label with two ends",
+    "titleZh": "取标签两端",
+    "en": "Read a nonempty label on line 1 and an integer K from 1 to its length on line 2. Print the Kth character from the left, then the Kth character from the right, on separate lines. A label consists of letters and digits.",
+    "zh": "第一行读入由字母、数字组成的非空标签，第二行读入 K，范围为 1 到标签长度。分别输出从左边数第 K 个字符和从右边数第 K 个字符，每个一行。",
+    "hint": "The first position from the right has Python index -1.",
+    "hintZh": "从右边数的第一位在 Python 中的索引为 -1。",
+    "level": "Easy",
+    "topic": "Negative indexing",
+    "topicZh": "负索引",
+    "starter": "label = input()\nk = int(input())\n# Write your solution here.\n",
+    "solution": "label = input()\nk = int(input())\nprint(label[k - 1])\nprint(label[-k])\n",
+    "tests": [
+      {
+        "input": "Ax47K\n2",
+        "output": "x\n7"
+      },
+      {
+        "input": "T\n1",
+        "output": "T\nT"
+      },
+      {
+        "input": "abc\n3",
+        "output": "c\na"
+      },
+      {
+        "input": "121\n2",
+        "output": "2\n2"
+      }
+    ]
+  },
+  {
+    "id": "L4-8",
+    "unit": "L4",
+    "title": "Separate the header",
+    "titleZh": "分离报文头",
+    "en": "Read one line of text. Split it at the first equals sign. Print the left and right parts on separate lines, stripping outer whitespace from each. Print (empty) for an empty part. If there is no equals sign, print only INVALID.",
+    "zh": "读入一行文本，在第一个等号处分开。两行依次输出左右部分，去掉各部分两端的空白。空部分输出 (empty)。如果找不到等号，只输出 INVALID。",
+    "hint": "Only the first separator is structural. Later equals signs belong to the value.",
+    "hintZh": "仅第一个等号用于分隔，后面的等号都属于右边的值。",
+    "level": "Medium",
+    "topic": "Finding delimiters",
+    "topicZh": "查找分隔符",
+    "starter": "line = input()\n# Write your solution here.\n",
+    "solution": "line = input()\nposition = line.find('=')\nif position == -1:\n    print('INVALID')\nelse:\n    print(line[:position].strip() or '(empty)')\n    print(line[position + 1:].strip() or '(empty)')\n",
+    "tests": [
+      {
+        "input": " mode = A=B ",
+        "output": "mode\nA=B"
+      },
+      {
+        "input": " = x",
+        "output": "(empty)\nx"
+      },
+      {
+        "input": "END=",
+        "output": "END\n(empty)"
+      },
+      {
+        "input": "none",
+        "output": "INVALID"
+      },
+      {
+        "input": "=",
+        "output": "(empty)\n(empty)"
+      }
+    ]
+  },
+  {
+    "id": "L4-9",
+    "unit": "L4",
+    "title": "The folded message",
+    "titleZh": "折行报文",
+    "en": "Read a positive line width W, then a nonempty message containing only letters and digits. Print the message in consecutive groups of W characters, one group per line. Pad the final group on the right with dots to exactly W characters.",
+    "zh": "先读入正整数行宽 W，再读入仅由字母和数字组成的非空报文。以 W 个字符为一组按顺序逐行输出；若最后一组不足 W 位，则在右边补点号至正好 W 位。",
+    "hint": "Use a range whose step is the width. Check how many characters the last slice contains.",
+    "hintZh": "循环步长取行宽，检查最后一次切片的长度。",
+    "level": "Medium",
+    "topic": "Fixed-width slices",
+    "topicZh": "定宽切片",
+    "starter": "width = int(input())\nmessage = input()\n# Write your solution here.\n",
+    "solution": "width = int(input())\nmessage = input()\nfor start in range(0, len(message), width):\n    part = message[start:start + width]\n    print(part + '.' * (width - len(part)))\n",
+    "tests": [
+      {
+        "input": "3\nABCDEFG",
+        "output": "ABC\nDEF\nG.."
+      },
+      {
+        "input": "2\nABCD",
+        "output": "AB\nCD"
+      },
+      {
+        "input": "4\nQ",
+        "output": "Q..."
+      },
+      {
+        "input": "1\na3",
+        "output": "a\n3"
+      }
+    ]
+  },
+  {
+    "id": "L4-10",
+    "unit": "L4",
+    "title": "Recover a mirrored packet",
+    "titleZh": "还原镜像报文",
+    "en": "A receiver gets one line label|payload. The label contains ASCII letters with possible outer spaces, and is nonempty after stripping. The payload contains uppercase ASCII letters and may be empty. The sender shifted each original payload letter forward by the length of the stripped label (wrapping Z to A), then reversed the whole payload. Restore the original payload and print UPPERCASE_LABEL|original. Count only the characters of the stripped label when undoing the shift.",
+    "zh": "接收器读入一行 label|payload。标签由英文字母和可能的首尾空格组成，去除空格后非空。载荷由大写英文字母组成，可以为空。发送方先把原载荷中每个字母向后移动标签去空格后的长度（Z 后回到 A），再反转载荷。还原后输出 大写标签|原载荷。逆移位时只用去空格后的标签长度。",
+    "hint": "Split the two fields before trimming the label. Reverse the payload, then subtract the shift modulo 26.",
+    "hintZh": "先拆字段再去掉标签首尾空格。把载荷逆序，再按模 26 减去移位量。",
+    "level": "Medium",
+    "topic": "Recap · fields, slicing and character codes",
+    "topicZh": "综合 · 字段解析、切片与字符编码",
+    "starter": "packet = input()\n# Write your solution here.\n",
+    "solution": "packet = input()\nlabel, payload = packet.split('|')\nlabel = label.strip().upper()\ndecoded = []\nfor ch in payload[::-1]:\n    index = (ord(ch) - ord('A') - len(label)) % 26\n    decoded.append(chr(ord('A') + index))\nprint(label + '|' + ''.join(decoded))\n",
+    "tests": [
+      {
+        "input": " lab |CB",
+        "output": "LAB|YZ"
+      },
+      {
+        "input": "x|A",
+        "output": "X|Z"
+      },
+      {
+        "input": " AB |",
+        "output": "AB|"
+      },
+      {
+        "input": "tag|GFED",
+        "output": "TAG|ABCD"
+      },
+      {
+        "input": "abcdefghijklmnopqrstuvwxyz|ZY",
+        "output": "ABCDEFGHIJKLMNOPQRSTUVWXYZ|YZ"
+      }
+    ],
+    "recap": true
+  },
+  {
     "id": "L5-1",
     "unit": "L5",
     "title": "Clean readings",
@@ -702,6 +1224,172 @@ window.QUESTIONS = [
       }
     ],
     "topicZh": "文本文件"
+  },
+  {
+    "id": "L5-6",
+    "unit": "L5",
+    "title": "Sample in a stack",
+    "titleZh": "后进先出的样本",
+    "en": "Read N ≥ 0, then N lines. Each is PUSH word or POP. Start with an empty stack. For each POP, print the most recently pushed word still present and remove it. Print EMPTY if nothing is present. Finally print the number of remaining words on its own line.",
+    "zh": "先读取 N ≥ 0，接下来 N 行各为 PUSH 单词或 POP。初始栈为空。收到 POP 时弹出并输出尚在栈中的最后一个入栈单词；栈为空时输出 EMPTY。最后另起一行输出剩余单词数量。",
+    "hint": "append adds one item at the end. pop without an index removes the last item.",
+    "hintZh": "append 在末尾追加一项，不带索引的 pop 删除末项。",
+    "level": "Medium",
+    "topic": "List append and pop",
+    "topicZh": "列表追加与弹出",
+    "starter": "n = int(input())\nstack = []\n# Write your solution here.\n",
+    "solution": "n = int(input())\nstack = []\nfor _ in range(n):\n    parts = input().split()\n    if parts[0] == 'PUSH':\n        stack.append(parts[1])\n    else:\n        print(stack.pop() if stack else 'EMPTY')\nprint(len(stack))\n",
+    "tests": [
+      {
+        "input": "4\nPUSH red\nPUSH blue\nPOP\nPUSH gold",
+        "output": "blue\n2"
+      },
+      {
+        "input": "0",
+        "output": "0"
+      },
+      {
+        "input": "2\nPOP\nPOP",
+        "output": "EMPTY\nEMPTY\n0"
+      },
+      {
+        "input": "3\nPUSH X\nPOP\nPOP",
+        "output": "X\nEMPTY\n0"
+      }
+    ]
+  },
+  {
+    "id": "L5-7",
+    "unit": "L5",
+    "title": "Reverse the inspection pairs",
+    "titleZh": "反转巡检记录对",
+    "en": "Read N ≥ 1, then N lines each containing a station name (one word) and an integer reading. Store each pair as a tuple. In reverse input order, print one line per pair with the reading first and the name second, separated by one space.",
+    "zh": "读入 N ≥ 1，后续 N 行各有一个不含空格的站名和一个整数读数。每一对存为元组。按输入的逆序逐行输出，先读数后站名，两者之间用一个空格分隔。",
+    "hint": "Reverse the records as a sequence, then unpack each record.",
+    "hintZh": "先按逆序遍历记录，再解包每一条记录。",
+    "level": "Easy",
+    "topic": "Tuple records",
+    "topicZh": "元组记录",
+    "starter": "n = int(input())\nrecords = []\n# Write your solution here.\n",
+    "solution": "n = int(input())\nrecords = []\nfor _ in range(n):\n    name, reading = input().split()\n    records.append((name, int(reading)))\nfor name, reading in reversed(records):\n    print(reading, name)\n",
+    "tests": [
+      {
+        "input": "3\nA 4\nB -1\nA 7",
+        "output": "7 A\n-1 B\n4 A"
+      },
+      {
+        "input": "1\nX 0",
+        "output": "0 X"
+      },
+      {
+        "input": "2\nX 1\nX 1",
+        "output": "1 X\n1 X"
+      },
+      {
+        "input": "2\nAA 010\na 2",
+        "output": "2 a\n10 AA"
+      }
+    ]
+  },
+  {
+    "id": "L5-8",
+    "unit": "L5",
+    "title": "Patch a schedule slice",
+    "titleZh": "替换日程片段",
+    "en": "Read three lines: a sequence of words, two integer bounds lo hi, and a replacement sequence of words. A sequence may be blank. Replace the slice from lo inclusive to hi exclusive with all replacement words. Assume 0 ≤ lo ≤ hi ≤ the original length. Print the new sequence separated by spaces, or EMPTY if it has no words.",
+    "zh": "读入三行：初始单词序列、两个整数边界 lo hi、替换用的单词序列。序列可为空行。把从 lo（含）到 hi（不含）的切片替换成全部新单词。0 ≤ lo ≤ hi ≤ 初始长度。以空格分隔输出更新后的序列；序列为空则输出 EMPTY。",
+    "hint": "A slice can be replaced by a longer or shorter list. What if its two bounds are equal?",
+    "hintZh": "替换列表可以比原切片更长或更短。两个边界相等时会怎样？",
+    "level": "Medium",
+    "topic": "Slice assignment",
+    "topicZh": "切片赋值",
+    "starter": "words = input().split()\nlo, hi = map(int, input().split())\nreplacement = input().split()\n# Write your solution here.\n",
+    "solution": "words = input().split()\nlo, hi = map(int, input().split())\nreplacement = input().split()\nwords[lo:hi] = replacement\nprint(' '.join(words) or 'EMPTY')\n",
+    "tests": [
+      {
+        "input": "a b c d\n1 3\nX",
+        "output": "a X d"
+      },
+      {
+        "input": "x y\n0 0\nA B",
+        "output": "A B x y"
+      },
+      {
+        "input": "a\n0 1\n\n",
+        "output": "EMPTY"
+      },
+      {
+        "input": "\n0 0\nZ",
+        "output": "Z"
+      }
+    ]
+  },
+  {
+    "id": "L5-9",
+    "unit": "L5",
+    "title": "Append a lab note",
+    "titleZh": "续写实验日志",
+    "en": "Read N ≥ 0, then N complete lines of notes, then one extra line. A note line can be blank. Create notes.txt in write mode from the first N lines, giving each its own newline. Reopen in append mode to add the extra line. Read the file back and print two integers: its line count and its number of non-whitespace characters.",
+    "zh": "先读 N ≥ 0，随后 N 行为已有日志，再读一行新增日志。日志行可为空。用写入模式创建 notes.txt，每条已有日志独占一行并加换行。以追加模式写入新增日志，再读回文件。输出文件行数与非空白字符数，以空格分隔。",
+    "hint": "Iterating over a text file yields blank lines as well. str.isspace() recognizes whitespace.",
+    "hintZh": "遍历文本文件也会读到空行，可用 str.isspace() 判断空白字符。",
+    "level": "Medium",
+    "topic": "File modes and lines",
+    "topicZh": "文件模式与行",
+    "starter": "n = int(input())\n# Write your solution here.\n",
+    "solution": "n = int(input())\nwith open('notes.txt', 'w', encoding='utf-8') as f:\n    for _ in range(n):\n        print(input(), file=f)\nwith open('notes.txt', 'a', encoding='utf-8') as f:\n    print(input(), file=f)\nwith open('notes.txt', encoding='utf-8') as f:\n    lines = f.readlines()\nprint(len(lines), sum(not c.isspace() for line in lines for c in line))\n",
+    "tests": [
+      {
+        "input": "2\na b\nc\ndd",
+        "output": "3 5"
+      },
+      {
+        "input": "0\n\n",
+        "output": "1 0"
+      },
+      {
+        "input": "1\n   \n X ",
+        "output": "2 1"
+      },
+      {
+        "input": "2\n1\n\n2 3",
+        "output": "3 3"
+      }
+    ]
+  },
+  {
+    "id": "L5-10",
+    "unit": "L5",
+    "title": "Rebuild the shift register",
+    "titleZh": "重建班次记录",
+    "en": "The starter writes N rows (1 ≤ N ≤ 100) to shifts.txt. Each row contains a one-word worker name and integer minutes. The last input line gives an index i (0-based) and a nonnegative deduction d. Read the file into a list of (name, minutes) tuples. Make a copy and replace just record i in the copy, subtracting d with a floor of zero. Print the name, its original minutes and its corrected minutes on the first line. Print the total original minutes and corrected minutes on the second line. All original minute counts are nonnegative.",
+    "zh": "起始代码将 N 行（1 ≤ N ≤ 100）写入 shifts.txt，每行含一个单词表示的员工名和非负整数分钟数。最后一行输入零起始索引 i（有效）及非负扣减量 d。读回文件，将记录存成 (姓名, 分钟数) 元组列表。复制列表，仅在副本中替换第 i 条记录：减去 d，最低为零。第一行输出该员工姓名、原分钟数和修正分钟数；第二行依次输出全部记录修正前后的总分钟数。",
+    "hint": "Immutable tuples can be shared safely while copying the list. Replace the whole tuple at one index in the copy.",
+    "hintZh": "复制列表时可安全共享不可变元组。在副本的目标位置替换整条元组即可。",
+    "level": "Medium",
+    "topic": "Recap · file iteration, tuple records and copying",
+    "topicZh": "综合 · 文件遍历、元组记录与复制",
+    "starter": "n = int(input())\nwith open('shifts.txt', 'w', encoding='utf-8') as output:\n    for _ in range(n):\n        print(input(), file=output)\ni, deduction = map(int, input().split())\n# Write your solution here.\n",
+    "solution": "n = int(input())\nwith open('shifts.txt', 'w', encoding='utf-8') as output:\n    for _ in range(n):\n        print(input(), file=output)\ni, deduction = map(int, input().split())\nrecords = []\nwith open('shifts.txt', encoding='utf-8') as source:\n    for line in source:\n        name, minutes = line.split()\n        records.append((name, int(minutes)))\nedited = records.copy()\nname, old = records[i]\nedited[i] = (name, max(0, old - deduction))\nprint(name, old, edited[i][1])\nprint(sum(m for _, m in records), sum(m for _, m in edited))\n",
+    "tests": [
+      {
+        "input": "3\nMay 40\nLeo 15\nMay 10\n1 5",
+        "output": "Leo 15 10\n65 60"
+      },
+      {
+        "input": "1\nA 4\n0 10",
+        "output": "A 4 0\n4 0"
+      },
+      {
+        "input": "2\nA 0\nB 3\n0 9",
+        "output": "A 0 0\n3 3"
+      },
+      {
+        "input": "2\nA 4\nA 5\n1 0",
+        "output": "A 5 5\n9 9"
+      }
+    ],
+    "recap": true
   },
   {
     "id": "L6-1",
@@ -873,6 +1561,172 @@ window.QUESTIONS = [
     "topicZh": "函数组合"
   },
   {
+    "id": "L6-6",
+    "unit": "L6",
+    "title": "The consumed iterator",
+    "titleZh": "被消费的迭代器",
+    "en": "Read K ≥ 0 and a second line of space-separated integers (possibly blank). Create one map iterator that squares the integers. Consume up to K values from it and print their sum. On the next line print the sum of the squares still in that same iterator.",
+    "zh": "读入 K ≥ 0 和一行空格分隔的整数（该行可为空）。创建一个对各数平方的 map 迭代器。从中最多取出 K 项并输出它们的和；下一行输出同一迭代器中剩余平方值的和。",
+    "hint": "next advances the iterator; sum continues from its current position.",
+    "hintZh": "next 会推进迭代器，sum 从其当前位置继续。",
+    "level": "Medium",
+    "topic": "Lazy map",
+    "topicZh": "惰性 map",
+    "starter": "k = int(input())\nvalues = list(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "k = int(input())\nvalues = list(map(int, input().split()))\nsquares = map(lambda x: x * x, values)\nfirst = sum(next(squares) for _ in range(min(k, len(values))))\nprint(first)\nprint(sum(squares))\n",
+    "tests": [
+      {
+        "input": "2\n-2 3 4",
+        "output": "13\n16"
+      },
+      {
+        "input": "0\n3 -1",
+        "output": "0\n10"
+      },
+      {
+        "input": "9\n1 2",
+        "output": "5\n0"
+      },
+      {
+        "input": "2\n\n",
+        "output": "0\n0"
+      }
+    ]
+  },
+  {
+    "id": "L6-7",
+    "unit": "L6",
+    "title": "Return the first refusal",
+    "titleZh": "返回首个不合格位置",
+    "en": "Implement first_refusal(values, minimum). Return the zero-based position of the first value strictly below minimum, or None if every value passes. Read the minimum on one line and a possibly empty sequence of integers on the next. Print the returned index or PASS for None.",
+    "zh": "实现 first_refusal(values, minimum)。返回第一个严格小于 minimum 的元素的零起始位置。全部合格则返回 None。第一行给出门槛，第二行给出可为空的整数序列。输出返回的索引，返回 None 时输出 PASS。",
+    "hint": "An index of zero is a valid refusal. Test for None explicitly.",
+    "hintZh": "索引零是有效结果，请明确判断是否为 None。",
+    "level": "Medium",
+    "topic": "Return paths",
+    "topicZh": "返回分支",
+    "starter": "def first_refusal(values, minimum):\n    pass\n\nminimum = int(input())\nvalues = list(map(int, input().split()))\nindex = first_refusal(values, minimum)\nprint(\"PASS\" if index is None else index)\n",
+    "solution": "def first_refusal(values, minimum):\n    for i, value in enumerate(values):\n        if value < minimum:\n            return i\n    return None\n\nminimum = int(input())\nvalues = list(map(int, input().split()))\nindex = first_refusal(values, minimum)\nprint('PASS' if index is None else index)\n",
+    "tests": [
+      {
+        "input": "5\n5 4 3",
+        "output": "1"
+      },
+      {
+        "input": "0\n-1 2",
+        "output": "0"
+      },
+      {
+        "input": "2\n2 7",
+        "output": "PASS"
+      },
+      {
+        "input": "3\n\n",
+        "output": "PASS"
+      }
+    ]
+  },
+  {
+    "id": "L6-8",
+    "unit": "L6",
+    "title": "Offset at definition time",
+    "titleZh": "定义时的偏移量",
+    "en": "Read initial offset A, updated offset B, and reading X on three lines, all integers. Set offset to A, then define adjust(x, bias=offset) to return x + bias. Set offset to B after the definition. Print adjust(X) and adjust(X, bias=offset) on one line in that order.",
+    "zh": "三行读入整数：初始偏移 A、新偏移 B、读数 X。将 offset 设为 A，再定义 adjust(x, bias=offset)，返回 x + bias。定义完成后将 offset 设为 B。一行依次输出 adjust(X) 和 adjust(X, bias=offset) 的结果。",
+    "hint": "The default expression is evaluated when def is executed.",
+    "hintZh": "默认表达式在执行 def 时求值。",
+    "level": "Medium",
+    "topic": "Default evaluation",
+    "topicZh": "默认值求值时机",
+    "starter": "a = int(input())\nb = int(input())\nx = int(input())\n# Write your solution here.\n",
+    "solution": "a = int(input())\nb = int(input())\nx = int(input())\noffset = a\ndef adjust(x, bias=offset):\n    return x + bias\noffset = b\nprint(adjust(x), adjust(x, bias=offset))\n",
+    "tests": [
+      {
+        "input": "3\n7\n10",
+        "output": "13 17"
+      },
+      {
+        "input": "-2\n0\n1",
+        "output": "-1 1"
+      },
+      {
+        "input": "4\n4\n-4",
+        "output": "0 0"
+      },
+      {
+        "input": "0\n3\n0",
+        "output": "0 3"
+      }
+    ]
+  },
+  {
+    "id": "L6-9",
+    "unit": "L6",
+    "title": "Which check failed?",
+    "titleZh": "哪条测试失败？",
+    "en": "A specification says band(x) must return LOW for x < 0, MID for 0 ≤ x < 10, and HIGH otherwise. A candidate implementation returns LOW for x ≤ 0, MID for 0 < x ≤ 10, and HIGH otherwise. Read one line of space-separated integer test inputs (possibly blank). Print the 1-based positions of all tests that would expose the bug, or NONE.",
+    "zh": "规格要求 band(x) 在 x < 0 时返回 LOW，0 ≤ x < 10 时返回 MID，其他情况返回 HIGH。候选实现在 x ≤ 0 时返回 LOW，0 < x ≤ 10 时返回 MID，其余返回 HIGH。读一行空格分隔的整数测试输入（可为空），输出所有能暴露错误的测试序号（从 1 开始，以空格分隔），没有则输出 NONE。",
+    "hint": "Write a small oracle for the specification and compare its result with the candidate for every input.",
+    "hintZh": "把规格写成一个小函数，对每个输入比较规格与候选实现的结果。",
+    "level": "Medium",
+    "topic": "Test partitioning",
+    "topicZh": "测试用例分类",
+    "starter": "values = list(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "values = list(map(int, input().split()))\ndef band(x):\n    return 'LOW' if x < 0 else 'MID' if x < 10 else 'HIGH'\ndef candidate(x):\n    return 'LOW' if x <= 0 else 'MID' if x <= 10 else 'HIGH'\nfailed = [str(i) for i, x in enumerate(values, 1) if band(x) != candidate(x)]\nprint(' '.join(failed) or 'NONE')\n",
+    "tests": [
+      {
+        "input": "-1 0 1 9 10 11",
+        "output": "2 5"
+      },
+      {
+        "input": "0 0 0",
+        "output": "1 2 3"
+      },
+      {
+        "input": "-9 1 20",
+        "output": "NONE"
+      },
+      {
+        "input": "\n",
+        "output": "NONE"
+      }
+    ]
+  },
+  {
+    "id": "L6-10",
+    "unit": "L6",
+    "title": "Test the two tariff functions",
+    "titleZh": "比较两种计费函数",
+    "en": "A meter charges 3 units per started block of 5 minutes. The supplied candidate mistakenly charges only for complete blocks. Implement fee(minutes, rate=3) correctly and first_failure(candidate, expected, cases), which calls both functions and returns the first failing input, or None. Read a possibly blank line of nonnegative integer test inputs. Print PASS if they all agree. Otherwise print the first failing input, the candidate result and the correct result on one line.",
+    "zh": "计费器对每开始的 5 分钟收 3 个单位，不足 5 分钟也按一段收费。给出的候选函数错误地只按完整时间段收费。正确实现 fee(minutes, rate=3) 及 first_failure(candidate, expected, cases)，后者须调用两个函数，返回首个结果不一致的输入；全部一致则返回 None。读入一行可为空的非负整数测试输入。全部一致时输出 PASS，否则在一行输出首个失败输入、候选结果和正确结果。",
+    "hint": "Write fee as the specification. Let the test function accept the two callables as arguments and return the failing value itself.",
+    "hintZh": "先把规格写成 fee 函数；测试函数把待测函数和规格函数作为参数，返回发生差异的输入值本身。",
+    "level": "Medium",
+    "topic": "Recap · function parameters, defaults and testing",
+    "topicZh": "综合 · 函数参数、默认值与测试",
+    "starter": "def candidate(minutes, rate=3):\n    return (minutes // 5) * rate\n\ndef fee(minutes, rate=3):\n    pass\n\ndef first_failure(candidate, expected, cases):\n    pass\n\ncases = list(map(int, input().split()))\n# Run the checks and print the requested report.\n",
+    "solution": "def candidate(minutes, rate=3):\n    return (minutes // 5) * rate\n\ndef fee(minutes, rate=3):\n    return ((minutes + 4) // 5) * rate\n\ndef first_failure(candidate, expected, cases):\n    for minutes in cases:\n        if candidate(minutes) != expected(minutes):\n            return minutes\n    return None\n\ncases = list(map(int, input().split()))\nfailure = first_failure(candidate, fee, cases)\nif failure is None:\n    print('PASS')\nelse:\n    print(failure, candidate(failure), fee(failure))\n",
+    "tests": [
+      {
+        "input": "0 10 11 1",
+        "output": "11 6 9"
+      },
+      {
+        "input": "0 5 10",
+        "output": "PASS"
+      },
+      {
+        "input": "\n",
+        "output": "PASS"
+      },
+      {
+        "input": "1 4",
+        "output": "1 0 3"
+      }
+    ],
+    "recap": true
+  },
+  {
     "id": "L7-1",
     "unit": "L7",
     "title": "Keep the original queue",
@@ -1036,6 +1890,172 @@ window.QUESTIONS = [
     "level": "Hard",
     "topic": "Aliasing and rebinding",
     "topicZh": "别名与重新绑定"
+  },
+  {
+    "id": "L7-6",
+    "unit": "L7",
+    "title": "Rows that move together",
+    "titleZh": "同步变化的行",
+    "en": "Read row and column counts R C (both positive), then a line i j v (valid zero-based indices and integer value). Make two zero grids: repeated = [[0]*C]*R and fresh with an independent row for each position. Assign v to cell [i][j] of both. For each grid in that order, print the sum of all entries.",
+    "zh": "先读一行正整数 R C，再读一行 i j v（有效的零起始坐标和整数值）。创建两个零矩阵：repeated = [[0]*C]*R，另一个 fresh 的每行独立创建。两个矩阵都把 [i][j] 改为 v。分别输出 repeated 和 fresh 中全部元素的和，每个矩阵一行。",
+    "hint": "Draw the row objects created before and after multiplying the outer list.",
+    "hintZh": "画出外层列表做乘法前后实际创建了哪些行对象。",
+    "level": "Medium",
+    "topic": "Repeated references",
+    "topicZh": "重复引用",
+    "starter": "r, c = map(int, input().split())\ni, j, value = map(int, input().split())\n# Write your solution here.\n",
+    "solution": "r, c = map(int, input().split())\ni, j, value = map(int, input().split())\nrepeated = [[0] * c] * r\nfresh = [[0] * c for _ in range(r)]\nfor grid in (repeated, fresh):\n    grid[i][j] = value\n    print(sum(sum(row) for row in grid))\n",
+    "tests": [
+      {
+        "input": "3 2\n1 0 5",
+        "output": "15\n5"
+      },
+      {
+        "input": "1 1\n0 0 -3",
+        "output": "-3\n-3"
+      },
+      {
+        "input": "2 4\n0 3 0",
+        "output": "0\n0"
+      },
+      {
+        "input": "4 1\n3 0 -2",
+        "output": "-8\n-2"
+      }
+    ]
+  },
+  {
+    "id": "L7-7",
+    "unit": "L7",
+    "title": "A tuple holding a tray",
+    "titleZh": "元组里的托盘",
+    "en": "Read a name, a line of space-separated integer readings (possibly blank), and integer X. Form a tuple (name, readings). Construct a second tuple (name, readings[:]). Append X to the list inside the first tuple. For each tuple in order, print its name, number of readings and sum of readings on one line, separated by spaces. Names are single words.",
+    "zh": "读入单词名称、空格分隔的整数读数（可为空行）以及整数 X，共三行。创建 (name, readings)，再创建 (name, readings[:])。向第一个元组内的列表追加 X。按两元组的顺序，各用一行输出名称、读数个数和总和，以空格分隔。",
+    "hint": "A tuple fixes its item references. One of those references can point to a mutable list.",
+    "hintZh": "元组固定各项的引用，其中一个引用可以指向可变列表。",
+    "level": "Medium",
+    "topic": "Mutable tuple contents",
+    "topicZh": "元组的可变内容",
+    "starter": "name = input()\nreadings = list(map(int, input().split()))\nx = int(input())\n# Write your solution here.\n",
+    "solution": "name = input()\nreadings = list(map(int, input().split()))\nx = int(input())\nlive = (name, readings)\nsaved = (name, readings[:])\nlive[1].append(x)\nfor label, row in (live, saved):\n    print(label, len(row), sum(row))\n",
+    "tests": [
+      {
+        "input": "D\n2 3\n7",
+        "output": "D 3 12\nD 2 5"
+      },
+      {
+        "input": "Q\n\n0",
+        "output": "Q 1 0\nQ 0 0"
+      },
+      {
+        "input": "X\n-1\n-2",
+        "output": "X 2 -3\nX 1 -1"
+      },
+      {
+        "input": "T\n0 0\n5",
+        "output": "T 3 5\nT 2 0"
+      }
+    ]
+  },
+  {
+    "id": "L7-8",
+    "unit": "L7",
+    "title": "The returned append",
+    "titleZh": "append 的返回值",
+    "en": "Read a line of space-separated words (possibly blank), then one new word. Let alias refer to the original list. Save the result of alias.append(word) in a variable. Print that result on line 1 and the contents of the original list joined with spaces on line 2.",
+    "zh": "读入一行空格分隔的单词（该行可为空），再读入一个新单词。让 alias 引用原列表，将 alias.append(word) 的返回值存入一个变量。第一行输出该返回值；第二行用空格连接并输出原列表中的单词。",
+    "hint": "Check both what append does to an object and what it returns to its caller.",
+    "hintZh": "分别观察 append 对对象产生的影响和它交给调用方的返回值。",
+    "level": "Easy",
+    "topic": "Mutation and return",
+    "topicZh": "修改与返回值",
+    "starter": "words = input().split()\nword = input()\n# Write your solution here.\n",
+    "solution": "words = input().split()\nword = input()\nalias = words\nresult = alias.append(word)\nprint(result)\nprint(*words)\n",
+    "tests": [
+      {
+        "input": "red blue\ngreen",
+        "output": "None\nred blue green"
+      },
+      {
+        "input": "\nA",
+        "output": "None\nA"
+      },
+      {
+        "input": "x\nx",
+        "output": "None\nx x"
+      },
+      {
+        "input": "one TWO\nthree",
+        "output": "None\none TWO three"
+      }
+    ]
+  },
+  {
+    "id": "L7-9",
+    "unit": "L7",
+    "title": "Patch the counters",
+    "titleZh": "修改共享字典",
+    "en": "Read starting integers A B on one line and an integer delta on the next. Store the two values in a dictionary under keys A and B. Implement shift(counts, delta): subtract delta from A and add it to B in the supplied dictionary, then return whichever key has the larger final value (TIE for equality). Print the return value on line 1 and the caller’s updated A B on line 2.",
+    "zh": "第一行给出初值 A B，第二行给出整数 delta。将初值存入字典的 A、B 键。实现 shift(counts, delta)，在传入的字典中把 A 减去 delta、B 加上 delta，再返回最终值较大的键名，相等时返回 TIE。第一行输出返回值，第二行输出调用方字典更新后的 A B。",
+    "hint": "Writing counts[\"A\"] changes the shared dictionary. Assigning a new dictionary to counts only changes the local name.",
+    "hintZh": "写入 counts[\"A\"] 会改变共享字典，给 counts 赋一个新字典只会改变局部名称。",
+    "level": "Medium",
+    "topic": "Dictionary parameter effects",
+    "topicZh": "字典参数的影响",
+    "starter": "def shift(counts, delta):\n    pass\n\na, b = map(int, input().split())\ncounts = {'A': a, 'B': b}\nprint(shift(counts, int(input())))\nprint(counts['A'], counts['B'])\n",
+    "solution": "def shift(counts, delta):\n    counts['A'] -= delta\n    counts['B'] += delta\n    if counts['A'] == counts['B']:\n        return 'TIE'\n    return max(counts, key=counts.get)\n\na, b = map(int, input().split())\ncounts = {'A': a, 'B': b}\nprint(shift(counts, int(input())))\nprint(counts['A'], counts['B'])\n",
+    "tests": [
+      {
+        "input": "8 2\n3",
+        "output": "TIE\n5 5"
+      },
+      {
+        "input": "1 1\n-2",
+        "output": "A\n3 -1"
+      },
+      {
+        "input": "3 6\n0",
+        "output": "B\n3 6"
+      },
+      {
+        "input": "0 0\n0",
+        "output": "TIE\n0 0"
+      }
+    ]
+  },
+  {
+    "id": "L7-10",
+    "unit": "L7",
+    "title": "Freeze the instrument record",
+    "titleZh": "冻结仪器记录",
+    "en": "A dictionary record contains a one-word label and a list of readings. Read the label, a line of integer readings (possibly blank), then new_label and integer x on one line. Create shallow = record.copy() and also a snapshot with its own copy of the readings. Change the label in record to new_label and append x to its readings. Print record, shallow and snapshot in that order, each as label followed by its reading count and sum, separated by spaces. Decide which values were rebound and which object was mutated.",
+    "zh": "字典记录包含一个单词标签和一组读数。前三行依次给出标签、一行整数读数（可为空）、用空格分隔的新标签与整数 x。创建 shallow = record.copy()，另建一个拥有独立读数列表的快照。把 record 的标签改为新标签，并在读数列表末尾追加 x。分别为 record、shallow、快照输出一行：标签、读数数量及总和，以空格分隔。需要区分哪些值被重新绑定、哪个对象被原地修改。",
+    "hint": "A new dictionary has independent keys, but a copied value may still refer to the same list.",
+    "hintZh": "新字典中的键可独立赋值，但复制过来的值仍可能指向同一个列表。",
+    "level": "Medium",
+    "topic": "Recap · shallow copying and nested mutation",
+    "topicZh": "综合 · 浅拷贝与嵌套修改",
+    "starter": "label = input()\nreadings = list(map(int, input().split()))\nnew_label, raw_x = input().split()\n# Write your solution here.\n",
+    "solution": "label = input()\nreadings = list(map(int, input().split()))\nnew_label, raw_x = input().split()\nrecord = {'label': label, 'readings': readings}\nshallow = record.copy()\nsnapshot = {'label': label, 'readings': readings.copy()}\nrecord['label'] = new_label\nrecord['readings'].append(int(raw_x))\nfor item in (record, shallow, snapshot):\n    print(item['label'], len(item['readings']), sum(item['readings']))\n",
+    "tests": [
+      {
+        "input": "A\n2 4\nB 3",
+        "output": "B 3 9\nA 3 9\nA 2 6"
+      },
+      {
+        "input": "X\n\nX -1",
+        "output": "X 1 -1\nX 1 -1\nX 0 0"
+      },
+      {
+        "input": "r\n0\ns 0",
+        "output": "s 2 0\nr 2 0\nr 1 0"
+      },
+      {
+        "input": "k\n-4 2\nK -1",
+        "output": "K 3 -3\nk 3 -3\nk 2 -2"
+      }
+    ],
+    "recap": true
   },
   {
     "id": "L8-1",
@@ -1205,6 +2225,184 @@ window.QUESTIONS = [
     "level": "Hard",
     "topic": "Selection sort and keys",
     "topicZh": "选择排序与排序键"
+  },
+  {
+    "id": "L8-6",
+    "unit": "L8",
+    "title": "First available slot",
+    "titleZh": "首个可用时段",
+    "en": "Read a sorted nondecreasing line of integer departure times (possibly blank), then an integer arrival time. Use binary search to find the smallest zero-based index whose departure is at least the arrival time. Print that index, or FULL if no such departure exists.",
+    "zh": "第一行读入按非降序排列的整数发车时刻（可为空），第二行读入整数到达时刻。用二分查找找出发车时刻不早于到达时刻的最小零起始索引。没有合适车次时输出 FULL。",
+    "hint": "When mid qualifies, retain it as a candidate and continue toward smaller indices.",
+    "hintZh": "当中点符合条件时，把它保留为候选，继续向较小索引搜索。",
+    "level": "Medium",
+    "topic": "Lower-bound search",
+    "topicZh": "二分查找下界",
+    "starter": "times = list(map(int, input().split()))\narrival = int(input())\n# Write your solution here.\n",
+    "solution": "times = list(map(int, input().split()))\narrival = int(input())\nlo, hi = 0, len(times)\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    if times[mid] < arrival:\n        lo = mid + 1\n    else:\n        hi = mid\nprint(lo if lo < len(times) else 'FULL')\n",
+    "tests": [
+      {
+        "input": "2 4 4 8\n4",
+        "output": "1"
+      },
+      {
+        "input": "1 3\n4",
+        "output": "FULL"
+      },
+      {
+        "input": "\n0",
+        "output": "FULL"
+      },
+      {
+        "input": "5 6\n-3",
+        "output": "0"
+      },
+      {
+        "input": "1 4 8\n5",
+        "output": "2"
+      }
+    ]
+  },
+  {
+    "id": "L8-7",
+    "unit": "L8",
+    "title": "Passes until quiet",
+    "titleZh": "直到无交换的一趟",
+    "en": "Read one possibly blank line of integers. Perform ascending bubble sort. On pass 1 compare adjacent entries from the start through the final pair. On each later pass omit one more position from the right. Stop after a pass makes zero swaps or after N−1 passes, whichever comes first. Print the number of completed passes and total swaps. Lists shorter than two need zero passes.",
+    "zh": "读入一行整数（可为空行）。进行升序冒泡排序，第一趟从左到右比较所有相邻元素，以后每趟从右端多排除一个位置。一趟没有交换即停止，最多执行 N−1 趟。输出执行的趟数和总交换数。少于两个元素时两者均为零。",
+    "hint": "Count the final no-swap pass when it actually takes place. Equal neighbors stay in place.",
+    "hintZh": "若实际执行了无交换的一趟，这一趟也要计数。相等的相邻项不交换。",
+    "level": "Medium",
+    "topic": "Bubble-sort early exit",
+    "topicZh": "冒泡排序提前退出",
+    "starter": "values = list(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "values = list(map(int, input().split()))\npasses = swaps = 0\nfor end in range(len(values) - 1, 0, -1):\n    passes += 1\n    changed = False\n    for i in range(end):\n        if values[i] > values[i + 1]:\n            values[i], values[i + 1] = values[i + 1], values[i]\n            swaps += 1\n            changed = True\n    if not changed:\n        break\nprint(passes, swaps)\n",
+    "tests": [
+      {
+        "input": "2 1 3 4",
+        "output": "2 1"
+      },
+      {
+        "input": "4 3 2 1",
+        "output": "3 6"
+      },
+      {
+        "input": "4 4 4",
+        "output": "1 0"
+      },
+      {
+        "input": "\n",
+        "output": "0 0"
+      },
+      {
+        "input": "7",
+        "output": "0 0"
+      }
+    ]
+  },
+  {
+    "id": "L8-8",
+    "unit": "L8",
+    "title": "Rank the tied finishers",
+    "titleZh": "并列名次",
+    "en": "Read a nonempty line of integer scores. Print one rank per score in the original input order on a single space-separated line. A score’s rank is one plus the number of scores strictly greater than it. Equal scores share the same rank, and occupy multiple positions when ranking lower scores.",
+    "zh": "读入一行非空的整数分数。按原输入顺序在一行输出每个分数的名次，以空格分隔。名次等于严格高于该分数的人数加一。同分并列，计算后续较低分的名次时所有同分选手都占位置。",
+    "hint": "In a descending list, the first position of each score gives its rank.",
+    "hintZh": "将分数降序排列，某分数第一次出现的位置决定它的名次。",
+    "level": "Medium",
+    "topic": "Sorting and equal keys",
+    "topicZh": "排序与相等键",
+    "starter": "scores = list(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "scores = list(map(int, input().split()))\nranks = {}\nfor position, score in enumerate(sorted(scores, reverse=True), 1):\n    if score not in ranks:\n        ranks[score] = position\nprint(*(ranks[score] for score in scores))\n",
+    "tests": [
+      {
+        "input": "6 9 6 1",
+        "output": "2 1 2 4"
+      },
+      {
+        "input": "3 3 3",
+        "output": "1 1 1"
+      },
+      {
+        "input": "-5 -2 0",
+        "output": "3 2 1"
+      },
+      {
+        "input": "12",
+        "output": "1"
+      }
+    ]
+  },
+  {
+    "id": "L8-9",
+    "unit": "L8",
+    "title": "Two search budgets",
+    "titleZh": "两种查找预算",
+    "en": "Read N ≥ 1. For every integer target from 1 to N, search [1, 2, ..., N] separately. Linear search probes entries from the left. Binary search uses inclusive bounds and the lower midpoint until the target is found. Count one probe every time an entry is inspected. Print the total linear probes and total binary probes across all targets. N ≤ 2000.",
+    "zh": "读入 1 ≤ N ≤ 2000。对 1 到 N 中的每个目标，分别在 [1, 2, ..., N] 内查找。线性查找从左向右；二分查找使用闭区间和向下取整的中点，找到目标即停。每查看一个元素算一次检查。依次输出搜索所有目标的线性检查总数和二分检查总数。",
+    "hint": "For linear search the probe count for target t equals t. Restart the binary bounds for each target.",
+    "hintZh": "线性查找目标 t 恰好检查 t 次。每次搜索新目标都要重置二分区间。",
+    "level": "Hard",
+    "topic": "Comparing search work",
+    "topicZh": "比较查找成本",
+    "starter": "n = int(input())\n# Write your solution here.\n",
+    "solution": "n = int(input())\nbinary = 0\nfor target in range(1, n + 1):\n    lo, hi = 1, n\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        binary += 1\n        if target == mid:\n            break\n        if target < mid:\n            hi = mid - 1\n        else:\n            lo = mid + 1\nprint(n * (n + 1) // 2, binary)\n",
+    "tests": [
+      {
+        "input": "4",
+        "output": "10 8"
+      },
+      {
+        "input": "1",
+        "output": "1 1"
+      },
+      {
+        "input": "3",
+        "output": "6 5"
+      },
+      {
+        "input": "7",
+        "output": "28 17"
+      },
+      {
+        "input": "2",
+        "output": "3 3"
+      }
+    ]
+  },
+  {
+    "id": "L8-10",
+    "unit": "L8",
+    "title": "Find a qualifying motor",
+    "titleZh": "查找达标电机",
+    "en": "Read N ≥ 0, then N motors in catalogue order, each given as a distinct one-word model and integer rating. Read a final line containing a minimum acceptable rating. Stably sort by increasing rating, then binary-search for the first motor whose rating meets or exceeds that minimum. Print its model, rating and zero-based index in the sorted catalogue. If none qualifies, print NONE. Equal ratings retain catalogue order.",
+    "zh": "先读 N ≥ 0，再按目录原顺序读取 N 台电机，每行含一个不重复的单词型号和整数额定值。最后一行给出最低合格额定值。按额定值升序稳定排序，再用二分查找找出第一台达标电机。输出其型号、额定值及排序目录中的零起始索引；没有达标电机则输出 NONE。同额定值的电机保持目录原有顺序。",
+    "hint": "Sort only by rating. In the search, if a midpoint qualifies, keep searching the half that may contain an earlier qualifying motor.",
+    "hintZh": "只用额定值作排序键。若中点达标，继续检查可能含有更早达标项的半段。",
+    "level": "Hard",
+    "topic": "Recap · stable key sort and binary search",
+    "topicZh": "综合 · 稳定键排序与二分查找",
+    "starter": "n = int(input())\nmotors = []\n# Write your solution here.\n",
+    "solution": "n = int(input())\nmotors = []\nfor _ in range(n):\n    name, value = input().split()\n    motors.append((name, int(value)))\nminimum = int(input())\nmotors.sort(key=lambda m: m[1])\nlo, hi = 0, n\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    if motors[mid][1] < minimum:\n        lo = mid + 1\n    else:\n        hi = mid\nif lo == n:\n    print('NONE')\nelse:\n    print(*motors[lo], lo)\n",
+    "tests": [
+      {
+        "input": "4\nY 5\nA 5\nB 2\nC 9\n3",
+        "output": "Y 5 1"
+      },
+      {
+        "input": "0\n4",
+        "output": "NONE"
+      },
+      {
+        "input": "2\nP -1\nQ 5\n6",
+        "output": "NONE"
+      },
+      {
+        "input": "3\na 4\nb -2\nc -2\n-2",
+        "output": "b -2 0"
+      }
+    ],
+    "recap": true
   },
   {
     "id": "L9-1",
@@ -1386,6 +2584,188 @@ window.QUESTIONS = [
     "level": "Hard",
     "topic": "Merge sort",
     "topicZh": "归并排序"
+  },
+  {
+    "id": "L9-6",
+    "unit": "L9",
+    "title": "Skip-factor product",
+    "titleZh": "隔项阶乘积",
+    "en": "For a nonnegative integer N ≤ 100, define a product P(0)=P(1)=1 and P(N)=N × P(N−2) when N ≥ 2. Read N and print P(N). Implement P recursively.",
+    "zh": "对非负整数 N ≤ 100，定义 P(0)=P(1)=1；N ≥ 2 时 P(N)=N × P(N−2)。读入 N，递归实现 P 并输出 P(N)。",
+    "hint": "A step of two can terminate at 0 or 1.",
+    "hintZh": "每次减二可能在 0 或 1 终止。",
+    "level": "Easy",
+    "topic": "Recursive reduction",
+    "topicZh": "递归缩小问题",
+    "starter": "def product(n):\n    pass\n\nprint(product(int(input())))\n",
+    "solution": "def product(n):\n    if n < 2:\n        return 1\n    return n * product(n - 2)\nprint(product(int(input())))\n",
+    "tests": [
+      {
+        "input": "6",
+        "output": "48"
+      },
+      {
+        "input": "5",
+        "output": "15"
+      },
+      {
+        "input": "0",
+        "output": "1"
+      },
+      {
+        "input": "1",
+        "output": "1"
+      },
+      {
+        "input": "2",
+        "output": "2"
+      }
+    ]
+  },
+  {
+    "id": "L9-7",
+    "unit": "L9",
+    "title": "Split a batch",
+    "titleZh": "拆分批次",
+    "en": "Read N and K on one line, both from 1 to 100000. A batch of size at most K stays whole. Any larger batch splits into sizes N//2 and N−N//2, applying the same rule to each child with its own size. Print the number of final batches and the largest final batch size.",
+    "zh": "一行读入 N 和 K，均在 1 到 100000 之间。批次大小不超过 K 时保持原样；更大的批次按当前大小 n 拆成 n//2 和 n−n//2，再对子批次遵循同一规则。输出最终批次数量和最大的最终批次大小。",
+    "hint": "Each recursive result can be a pair. Combine counts by addition and sizes by maximum.",
+    "hintZh": "递归结果可用一对数表示。数量相加，大小取最大值。",
+    "level": "Medium",
+    "topic": "Divide-and-conquer leaves",
+    "topicZh": "分治递归的叶子",
+    "starter": "def split_batch(n, limit):\n    pass\n\nn, limit = map(int, input().split())\n# Print the resulting count and maximum.\n",
+    "solution": "def split_batch(n, limit):\n    if n <= limit:\n        return 1, n\n    left_n, left_max = split_batch(n // 2, limit)\n    right_n, right_max = split_batch(n - n // 2, limit)\n    return left_n + right_n, max(left_max, right_max)\nn, limit = map(int, input().split())\nprint(*split_batch(n, limit))\n",
+    "tests": [
+      {
+        "input": "11 3",
+        "output": "4 3"
+      },
+      {
+        "input": "1 5",
+        "output": "1 1"
+      },
+      {
+        "input": "5 1",
+        "output": "5 1"
+      },
+      {
+        "input": "6 6",
+        "output": "1 6"
+      },
+      {
+        "input": "13 5",
+        "output": "4 4"
+      }
+    ]
+  },
+  {
+    "id": "L9-8",
+    "unit": "L9",
+    "title": "Return route",
+    "titleZh": "原路返回",
+    "en": "Read a line of space-separated distinct station names (possibly blank, at most 100 names). Visit them in order by recursion. Print ENTER followed by a space and the current name before the call to the next station. Print LEAVE followed by a space and that name when the call returns. For an empty route print only IDLE.",
+    "zh": "读入一行空格分隔且不重复的站名（可为空，最多 100 个）。按输入顺序递归访问各站。递归前输出 ENTER、一个空格及当前站名；从下一站返回后输出 LEAVE、一个空格及当前站名。空路线只输出 IDLE。",
+    "hint": "One active call owns both messages for the same station.",
+    "hintZh": "同一层调用负责同一个站点的一进一出两条消息。",
+    "level": "Medium",
+    "topic": "Recursive unwinding",
+    "topicZh": "递归返回顺序",
+    "starter": "stations = input().split()\n# Write your solution here.\n",
+    "solution": "stations = input().split()\ndef visit(i):\n    if i == len(stations):\n        return\n    print('ENTER', stations[i])\n    visit(i + 1)\n    print('LEAVE', stations[i])\nif stations:\n    visit(0)\nelse:\n    print('IDLE')\n",
+    "tests": [
+      {
+        "input": "A B C",
+        "output": "ENTER A\nENTER B\nENTER C\nLEAVE C\nLEAVE B\nLEAVE A"
+      },
+      {
+        "input": "Gate",
+        "output": "ENTER Gate\nLEAVE Gate"
+      },
+      {
+        "input": "\n",
+        "output": "IDLE"
+      },
+      {
+        "input": "X Z",
+        "output": "ENTER X\nENTER Z\nLEAVE Z\nLEAVE X"
+      }
+    ]
+  },
+  {
+    "id": "L9-9",
+    "unit": "L9",
+    "title": "Count crossed pairs",
+    "titleZh": "统计逆序对",
+    "en": "Read a possibly blank line containing at most 10000 integers. A crossed pair is a pair of indices i < j with values[i] > values[j]. Print the number of crossed pairs. Use merge sort to count pairs between the halves while merging them.",
+    "zh": "读入一行不超过 10000 个整数（可以是空行）。对于索引 i < j，若 values[i] > values[j]，称为一个逆序对。输出逆序对数量。使用归并排序，在合并两个半区期间统计跨越半区的逆序对。",
+    "hint": "If the next right-hand value is smaller than the next left-hand value, it is smaller than every remaining left-hand value.",
+    "hintZh": "若右边当前项小于左边当前项，它也小于左边所有未取出的项。",
+    "level": "Hard",
+    "topic": "Merging and inversions",
+    "topicZh": "归并与逆序对",
+    "starter": "values = list(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "values = list(map(int, input().split()))\ndef sort_count(items):\n    if len(items) < 2:\n        return items, 0\n    mid = len(items) // 2\n    a, left = sort_count(items[:mid])\n    b, right = sort_count(items[mid:])\n    total = left + right\n    merged = []\n    i = j = 0\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]:\n            merged.append(a[i])\n            i += 1\n        else:\n            merged.append(b[j])\n            j += 1\n            total += len(a) - i\n    return merged + a[i:] + b[j:], total\nprint(sort_count(values)[1])\n",
+    "tests": [
+      {
+        "input": "3 1 2 1",
+        "output": "4"
+      },
+      {
+        "input": "2 2 2",
+        "output": "0"
+      },
+      {
+        "input": "5 4 3 2 1",
+        "output": "10"
+      },
+      {
+        "input": "\n",
+        "output": "0"
+      },
+      {
+        "input": "-2 1 -3",
+        "output": "2"
+      }
+    ]
+  },
+  {
+    "id": "L9-10",
+    "unit": "L9",
+    "title": "Median of a box tree",
+    "titleZh": "嵌套箱的中位读数",
+    "en": "A box is either an integer reading or a pair of boxes represented by a JSON array with exactly two elements. Read one box on one line, at most 1000 readings and at most 40 levels deep. Recursively return a sorted list of readings from each box: a leaf returns one reading, and a pair merges its children’s sorted results. Print the number of readings, the lower median and the upper median. For an odd count, print the same median twice. Keep duplicate readings.",
+    "zh": "一个箱子可以是整数读数，也可以是含两个子箱的 JSON 数组。一行读入一棵箱树，最多 1000 个读数，深度不超过 40 层。递归地返回每个箱子的有序读数列表：叶子只返回一个读数，成对的箱子则归并两个子结果。输出读数个数、下中位数、上中位数。奇数个读数时两个中位数相同。保留重复值。",
+    "hint": "The base case returns a list with one element. After the final merge, the median indices are (n−1)//2 and n//2.",
+    "hintZh": "基本情形返回仅含一项的列表。最终归并完毕后，两个中位数的索引分别是 (n−1)//2 和 n//2。",
+    "level": "Hard",
+    "topic": "Recap · nested recursion, stable merge and selection",
+    "topicZh": "综合 · 嵌套递归、归并与选取",
+    "starter": "import json\nroot = json.loads(input())\n# Write your solution here.\n",
+    "solution": "import json\nroot = json.loads(input())\ndef ordered(box):\n    if isinstance(box, int):\n        return [box]\n    left, right = (ordered(child) for child in box)\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    return result + left[i:] + right[j:]\n\nvalues = ordered(root)\nn = len(values)\nprint(n, values[(n - 1) // 2], values[n // 2])\n",
+    "tests": [
+      {
+        "input": "[[9,1],[5,2]]",
+        "output": "4 2 5"
+      },
+      {
+        "input": "0",
+        "output": "1 0 0"
+      },
+      {
+        "input": "[[4,4],-1]",
+        "output": "3 4 4"
+      },
+      {
+        "input": "[-9,[-4,[3,2]]]",
+        "output": "4 -4 2"
+      },
+      {
+        "input": "[1,1]",
+        "output": "2 1 1"
+      }
+    ],
+    "recap": true
   },
   {
     "id": "M-1",
@@ -1834,5 +3214,350 @@ window.QUESTIONS = [
       }
     ],
     "topicZh": "程序调试 · 字符串与字典"
+  },
+  {
+    "id": "M-13",
+    "unit": "M",
+    "title": "Turn the seat map",
+    "titleZh": "旋转座位图",
+    "en": "Read positive R C and then R lines of exactly C characters each (letters or dots). Rotate the rectangular map 90 degrees clockwise. Print the resulting C rows of R characters with no spaces between characters.",
+    "zh": "读入正整数 R C，再读 R 行座位图，每行恰好 C 个字符（字母或点号）。将矩形座位图顺时针旋转 90 度。输出 C 行，每行 R 个字符，字符之间没有空格。",
+    "hint": "The first output row is the first input column read from bottom to top.",
+    "hintZh": "输出的第一行是输入的第一列从下往上读。",
+    "level": "Medium",
+    "topic": "Nested lists · coordinates",
+    "topicZh": "嵌套列表与坐标",
+    "starter": "rows, cols = map(int, input().split())\ngrid = [input() for _ in range(rows)]\n# Write your solution here.\n",
+    "solution": "rows, cols = map(int, input().split())\ngrid = [input() for _ in range(rows)]\nfor j in range(cols):\n    print(''.join(grid[i][j] for i in range(rows - 1, -1, -1)))\n",
+    "tests": [
+      {
+        "input": "2 3\nA.B\nCD.",
+        "output": "CA\nD.\n.B"
+      },
+      {
+        "input": "1 3\nABC",
+        "output": "A\nB\nC"
+      },
+      {
+        "input": "3 1\nA\nB\nC",
+        "output": "CBA"
+      },
+      {
+        "input": "1 1\n.",
+        "output": "."
+      }
+    ]
+  },
+  {
+    "id": "M-14",
+    "unit": "M",
+    "title": "Check the cable drawing",
+    "titleZh": "检查电缆图",
+    "en": "Read a single line made only of (), [] and {} bracket characters. A closer must match the most recent unmatched opener. If a closer is wrong or has no opener, print its 1-based position. Otherwise print OPEN if some opener remains at the end, or OK if all pairs match. The empty line is valid.",
+    "zh": "输入一行，只包含 ()、[]、{} 中的括号字符。每个闭括号应匹配最近一个尚未匹配的开括号。若闭括号类型错误或没有对应开括号，输出第一个此类闭括号的位置（从 1 开始）。否则，结束时若仍有开括号未匹配则输出 OPEN，全部匹配则输出 OK。空行也是有效输入。",
+    "hint": "Use one list as a stack. Check for an empty stack before looking at its last item.",
+    "hintZh": "用列表作为栈，查看末项前先检查栈是否为空。",
+    "level": "Medium",
+    "topic": "Stacks · first error",
+    "topicZh": "栈与首次错误",
+    "starter": "drawing = input()\n# Write your solution here.\n",
+    "solution": "drawing = input()\nstack = []\npairs = {')': '(', ']': '[', '}': '{'}\nfor pos, ch in enumerate(drawing, 1):\n    if ch not in pairs:\n        stack.append(ch)\n    elif not stack or stack.pop() != pairs[ch]:\n        print(pos)\n        break\nelse:\n    print('OPEN' if stack else 'OK')\n",
+    "tests": [
+      {
+        "input": "([)]",
+        "output": "3"
+      },
+      {
+        "input": "{[()]}",
+        "output": "OK"
+      },
+      {
+        "input": "(()",
+        "output": "OPEN"
+      },
+      {
+        "input": "]",
+        "output": "1"
+      },
+      {
+        "input": "\n",
+        "output": "OK"
+      }
+    ]
+  },
+  {
+    "id": "M-15",
+    "unit": "M",
+    "title": "Reschedule the arrivals",
+    "titleZh": "安排先到先服务队列",
+    "en": "One bench handles jobs one at a time from time 0. Read N ≥ 1, then N lines each containing a distinct job name, a nonnegative integer arrival time and a positive integer duration. Serve jobs by arrival time; ties keep input order. Start each job as soon as both it and the bench are available. For each job in service order print name, start time and finish time separated by spaces.",
+    "zh": "一个工作台从时刻 0 开始，每次处理一个任务。先读 N ≥ 1，接着 N 行各给出不重复的任务名、非负整数到达时刻和正整数耗时。按到达顺序处理，同时到达的按输入顺序处理。到达且工作台空闲时立即开始。按处理顺序逐行输出任务名、开始和完成时刻，以空格分隔。",
+    "hint": "Sort stably by arrival. An idle bench cannot start the next job before it arrives.",
+    "hintZh": "按到达时刻稳定排序。即使工作台空闲，也要等到下一任务到达。",
+    "level": "Medium",
+    "topic": "Sorting · simulation",
+    "topicZh": "排序与队列模拟",
+    "starter": "n = int(input())\njobs = []\n# Write your solution here.\n",
+    "solution": "n = int(input())\njobs = []\nfor _ in range(n):\n    name, arrival, duration = input().split()\n    jobs.append((name, int(arrival), int(duration)))\nfree = 0\nfor name, arrival, duration in sorted(jobs, key=lambda job: job[1]):\n    start = max(arrival, free)\n    free = start + duration\n    print(name, start, free)\n",
+    "tests": [
+      {
+        "input": "3\nC 4 1\nA 2 4\nB 2 1",
+        "output": "A 2 6\nB 6 7\nC 7 8"
+      },
+      {
+        "input": "1\nX 8 2",
+        "output": "X 8 10"
+      },
+      {
+        "input": "2\nP 0 1\nK 5 3",
+        "output": "P 0 1\nK 5 8"
+      },
+      {
+        "input": "3\nZ 0 2\nY 0 2\nX 0 2",
+        "output": "Z 0 2\nY 2 4\nX 4 6"
+      }
+    ]
+  },
+  {
+    "id": "M-16",
+    "unit": "M",
+    "title": "Shortest full window",
+    "titleZh": "最短达标窗口",
+    "en": "Read a positive target T and a second line of positive integers (possibly blank, at most 10000 values). Find the shortest consecutive block whose sum is at least T. If lengths tie, choose the earliest start. Print its zero-based start index and its length, separated by a space. Print NONE when no block qualifies.",
+    "zh": "读入正整数目标 T，第二行给出正整数序列（可为空行，最多 10000 项）。找出总和至少为 T 的最短连续片段，长度相同时选起点最靠前者。以空格分隔输出其零起始索引和长度。没有合适片段则输出 NONE。",
+    "hint": "Because every value is positive, advancing the left end only decreases the sum. For each right end, shrink while the target still holds.",
+    "hintZh": "所有值都为正，左端右移只会使总和变小。对每个右端，窗口达标时尝试收缩。",
+    "level": "Hard",
+    "topic": "Lists · window bounds",
+    "topicZh": "列表与窗口边界",
+    "starter": "target = int(input())\nvalues = list(map(int, input().split()))\n# Write your solution here.\n",
+    "solution": "target = int(input())\nvalues = list(map(int, input().split()))\nleft = total = 0\nbest = None\nfor right, value in enumerate(values):\n    total += value\n    while total >= target:\n        candidate = (right - left + 1, left)\n        if best is None or candidate < best:\n            best = candidate\n        total -= values[left]\n        left += 1\nif best is None:\n    print('NONE')\nelse:\n    print(best[1], best[0])\n",
+    "tests": [
+      {
+        "input": "7\n2 3 1 2 4 3",
+        "output": "4 2"
+      },
+      {
+        "input": "5\n3 2 3 2",
+        "output": "0 2"
+      },
+      {
+        "input": "9\n1 2 3",
+        "output": "NONE"
+      },
+      {
+        "input": "1\n\n",
+        "output": "NONE"
+      },
+      {
+        "input": "8\n1 9 8",
+        "output": "1 1"
+      }
+    ]
+  },
+  {
+    "id": "M-17",
+    "unit": "M",
+    "title": "Compare two manifests",
+    "titleZh": "核对两份货单",
+    "en": "Read the required parts as one space-separated line, then the delivered parts on the next line. Either line may be blank. Each occurrence is one unit. For every part that is still short, print the part name and missing quantity on one line, in alphabetical order. Ignore excess deliveries. Print COMPLETE if nothing is short. Part names are lowercase ASCII words.",
+    "zh": "第一行给出所需零件，第二行给出已送达的零件，均以空格分隔，可以是空行。每出现一次代表一件。将所有缺少的零件按名称字母顺序逐行输出，每行给出名称和缺少数量。忽略多余的配送。如无短缺，只输出 COMPLETE。名称均为小写英文字母单词。",
+    "hint": "Count the required units, then subtract each matching delivery. Report strictly positive balances.",
+    "hintZh": "先统计需求数量，再逐项减掉对应的送达数量，只报告正余额。",
+    "level": "Medium",
+    "topic": "Dictionaries · multiplicity",
+    "topicZh": "字典与出现次数",
+    "starter": "required = input().split()\ndelivered = input().split()\n# Write your solution here.\n",
+    "solution": "required = input().split()\ndelivered = input().split()\nbalance = {}\nfor name in required:\n    balance[name] = balance.get(name, 0) + 1\nfor name in delivered:\n    if name in balance:\n        balance[name] -= 1\nmissing = [name for name in sorted(balance) if balance[name] > 0]\nif not missing:\n    print('COMPLETE')\nfor name in missing:\n    print(name, balance[name])\n",
+    "tests": [
+      {
+        "input": "pin gear pin cap cap\npin extra cap",
+        "output": "cap 1\ngear 1\npin 1"
+      },
+      {
+        "input": "a a\na a a",
+        "output": "COMPLETE"
+      },
+      {
+        "input": "\nx",
+        "output": "COMPLETE"
+      },
+      {
+        "input": "z a z\n\n",
+        "output": "a 1\nz 2"
+      }
+    ]
+  },
+  {
+    "id": "M-18",
+    "unit": "M",
+    "title": "Decode a strip of lamps",
+    "titleZh": "解码灯带",
+    "en": "Read one encoded line made of letters and digits. A valid line is one or more groups, each consisting of a single uppercase ASCII letter followed by a decimal count from 1 to 99 without a leading zero. Expand each group by repeating its letter that many times. Print the combined expansion, or INVALID if any part of the line violates the format. An empty line is invalid.",
+    "zh": "输入一行由字母与数字组成的编码。有效编码至少有一组，每组恰为一个大写英文字母，后接 1 到 99 的十进制次数，不能有前导零。将各字母重复相应次数，拼接后输出。任何部分不符合格式，或整行为空，都输出 INVALID。",
+    "hint": "After reading a letter, advance over the entire run of digits before validating its length and first digit.",
+    "hintZh": "读完字母后，先取出后面连续的全部数字，再检查位数和首位。",
+    "level": "Medium",
+    "topic": "String parsing · validation",
+    "topicZh": "字符串解析与校验",
+    "starter": "code = input()\n# Write your solution here.\n",
+    "solution": "code = input()\nparts = []\ni = 0\nvalid = bool(code)\nwhile valid and i < len(code):\n    letter = code[i]\n    i += 1\n    start = i\n    while i < len(code) and code[i].isdigit():\n        i += 1\n    count = code[start:i]\n    valid = 'A' <= letter <= 'Z' and 1 <= len(count) <= 2 and count[0] != '0'\n    if valid:\n        parts.append(letter * int(count))\nprint(''.join(parts) if valid else 'INVALID')\n",
+    "tests": [
+      {
+        "input": "A3B2",
+        "output": "AAABB"
+      },
+      {
+        "input": "Z1Q10",
+        "output": "ZQQQQQQQQQQ"
+      },
+      {
+        "input": "A01",
+        "output": "INVALID"
+      },
+      {
+        "input": "A2B",
+        "output": "INVALID"
+      },
+      {
+        "input": "\n",
+        "output": "INVALID"
+      },
+      {
+        "input": "a1",
+        "output": "INVALID"
+      },
+      {
+        "input": "A100",
+        "output": "INVALID"
+      }
+    ]
+  },
+  {
+    "id": "M-19",
+    "unit": "M",
+    "title": "Join the covered minutes",
+    "titleZh": "合并已覆盖时段",
+    "en": "Read N ≥ 0 and then N integer half-open intervals start end, one per line with start < end. Each interval covers time from start up to but excluding end. Merge intervals that overlap or touch. Print the number of merged intervals and their total duration, separated by one space.",
+    "zh": "先读 N ≥ 0，再读 N 个半开时间区间，每行两个整数 start end 且 start < end。区间覆盖起点但不含终点。把重叠或首尾相接的区间合并。输出合并后的区间数量及总时长，以一个空格分隔。",
+    "hint": "Sort by start. When extending the current interval, the new end is the larger of the two ends.",
+    "hintZh": "按起点排序，扩展区间时取原终点和新终点的较大值。",
+    "level": "Hard",
+    "topic": "Interval sorting · merging",
+    "topicZh": "区间排序与合并",
+    "starter": "n = int(input())\nintervals = [tuple(map(int, input().split())) for _ in range(n)]\n# Write your solution here.\n",
+    "solution": "n = int(input())\nintervals = [tuple(map(int, input().split())) for _ in range(n)]\nmerged = []\nfor start, end in sorted(intervals):\n    if not merged or start > merged[-1][1]:\n        merged.append([start, end])\n    else:\n        merged[-1][1] = max(merged[-1][1], end)\nprint(len(merged), sum(end - start for start, end in merged))\n",
+    "tests": [
+      {
+        "input": "4\n4 7\n1 3\n3 4\n9 10",
+        "output": "2 7"
+      },
+      {
+        "input": "0",
+        "output": "0 0"
+      },
+      {
+        "input": "3\n0 10\n3 5\n0 10",
+        "output": "1 10"
+      },
+      {
+        "input": "2\n-5 -2\n-1 2",
+        "output": "2 6"
+      }
+    ]
+  },
+  {
+    "id": "M-20",
+    "unit": "M",
+    "title": "Build a balanced tray",
+    "titleZh": "构建平衡托盘",
+    "en": "A tray is a JSON integer (a positive weight) or a list of exactly two trays. It is balanced if every pair of children has equal total weight and both children are balanced. A single weight is balanced. Read one JSON tray on one line, nested at most 50 levels deep. Print the total weight followed by BALANCED or TILTED on the same line.",
+    "zh": "托盘用 JSON 表示：可以是一个正整数（重量），也可以是恰含两个托盘的列表。若每个左右子托盘的总重相等且两边内部也都平衡，则整个托盘平衡；单个重物视为平衡。输入一行 JSON，嵌套深度最多为 50。输出总重量，接一个空格及 BALANCED 或 TILTED。",
+    "hint": "Return both a weight and a Boolean from each recursive call. Equal weight at the top alone is insufficient.",
+    "hintZh": "每次递归同时返回重量和平衡状态；只检查顶层左右等重并不足够。",
+    "level": "Hard",
+    "topic": "Recursion · weighted trees",
+    "topicZh": "递归与加权树",
+    "starter": "import json\ntray = json.loads(input())\n# Write your solution here.\n",
+    "solution": "import json\ntray = json.loads(input())\ndef inspect(node):\n    if isinstance(node, int):\n        return node, True\n    left, left_ok = inspect(node[0])\n    right, right_ok = inspect(node[1])\n    return left + right, left_ok and right_ok and left == right\ntotal, balanced = inspect(tray)\nprint(total, 'BALANCED' if balanced else 'TILTED')\n",
+    "tests": [
+      {
+        "input": "[[2,2],4]",
+        "output": "8 BALANCED"
+      },
+      {
+        "input": "[[1,3],[2,2]]",
+        "output": "8 TILTED"
+      },
+      {
+        "input": "7",
+        "output": "7 BALANCED"
+      },
+      {
+        "input": "[1,2]",
+        "output": "3 TILTED"
+      },
+      {
+        "input": "[[1,1],[1,1]]",
+        "output": "4 BALANCED"
+      }
+    ]
+  },
+  {
+    "id": "C-1",
+    "unit": "C",
+    "title": "Campus sensor audit",
+    "titleZh": "校园传感器巡检",
+    "en": "A campus monitoring team has received one batch of sensor readings. Write audit(batch, low, high, target) to produce one report. The batch is a list. Each item is either a nested list or a string of the form station|value. Stations contain ASCII letters with optional surrounding spaces. Values are signed integers. Lists may be empty and nest up to 30 levels.\n\nRead the leaves from left to right, visiting each nested list before continuing with its next sibling. Strip spaces from station names and convert them to uppercase. Count every reading, including duplicates. A reading is an alert if it is below low or above high. Both limits are safe.\n\nReturn [rows, target_values]. Each row is [station, number_of_readings, number_of_alerts]. Include every observed station once. Sort first by alert count from highest to lowest, then by station name from A to Z. target_values is the list of that station’s integer readings in their original visit order. Normalize target the same way as station names. A missing station gives an empty list. Leave the original nested batch unchanged.\n\nThe supplied driver reads three lines: low and high, the target station, then the batch as JSON. It calls your function, checks the original batch and prints your return value. Complete the function above the driver.",
+    "zh": "校园监测组收到一批嵌套存放的传感器读数。请完成 audit(batch, low, high, target)，提交一份完整报告。batch 是列表，每个元素可以是子列表，也可以是 station|value 形式的字符串。站名由英文字母组成，两端可能有空格。读数为有符号整数。列表可以为空，最多嵌套 30 层。\n\n从左到右读取记录。遇到子列表时，先处理完它的内容，再继续处理同级的下一项。站名需要去除两端空格并转成大写。每条记录都算一次，重复值也要保留。读数低于 low 或高于 high 时计一次报警，等于上下界均安全。\n\n返回 [rows, target_values]。rows 每行是 [站名, 读数条数, 报警次数]，每个出现过的站点占一行。先按报警次数降序排列，同分时按站名字母升序排列。target_values 是目标站按原始访问顺序排列的整数读数。用相同规则清洗 target；找不到站点时返回空列表。保留输入批次的原有内容。\n\n已提供的主程序读取三行：第一行是 low 和 high，第二行是目标站名，第三行是 JSON 格式的批次。主程序调用你的函数、检查输入批次是否被修改，并打印返回值。你只需补全上方的函数。",
+    "level": "Hard",
+    "topic": "L2–L9 · Full-course capstone",
+    "topicZh": "L2–L9 · 全课程综合",
+    "hint": "Walk the tree recursively and build a fresh dictionary of station → readings. Derive the table and the target list from that dictionary. For tied alert counts, check the second part of your sort key.",
+    "hintZh": "递归访问嵌套列表，用新字典将站名映射到读数列表。用这个字典生成汇总表和目标站读数。报警次数相同时，检查排序键的第二项。",
+    "starter": "def audit(batch, low, high, target):\n    # Build and return [rows, target_values].\n    pass\n\nimport json\nfrom copy import deepcopy\n\nlow, high = map(int, input().split())\ntarget = input()\nbatch = json.loads(input())\nbefore = deepcopy(batch)\nreport = audit(batch, low, high, target)\nif batch != before:\n    print(\"Input was modified\")\nelse:\n    print(repr(report))\n",
+    "solution": "def audit(batch, low, high, target):\n    readings = {}\n\n    def visit(node):\n        if isinstance(node, list):\n            for child in node:\n                visit(child)\n            return\n        label, raw = node.split(\"|\")\n        station = label.strip().upper()\n        readings.setdefault(station, []).append(int(raw))\n\n    visit(batch)\n    rows = []\n    for station, values in readings.items():\n        alerts = sum(value < low or value > high for value in values)\n        rows.append([station, len(values), alerts])\n    rows.sort(key=lambda row: (-row[2], row[0]))\n    return [rows, readings.get(target.strip().upper(), [])]\n\nimport json\nfrom copy import deepcopy\n\nlow, high = map(int, input().split())\ntarget = input()\nbatch = json.loads(input())\nbefore = deepcopy(batch)\nreport = audit(batch, low, high, target)\nif batch != before:\n    print(\"Input was modified\")\nelse:\n    print(repr(report))\n",
+    "tests": [
+      {
+        "input": "0 10\n west \n[\" East | 10\", [\"WEST|-2\", [], [\"east|13\", \"west|6\"]], \"NORTH|0\"]\n",
+        "output": "[[['EAST', 2, 1], ['WEST', 2, 1], ['NORTH', 1, 0]], [-2, 6]]"
+      },
+      {
+        "input": "5 5\nA\n[]\n",
+        "output": "[[], []]"
+      },
+      {
+        "input": "-2 2\nX\n[[[[]]], []]\n",
+        "output": "[[], []]"
+      },
+      {
+        "input": "0 0\nK\n[\"k|0\", \"K|0\", [\"k|+1\", \"K|-1\"]]\n",
+        "output": "[[['K', 4, 2]], [0, 0, 1, -1]]"
+      },
+      {
+        "input": "1 10\nmissing\n[\"Z|11\", \"A|1\", \"C|0\", \"B|8\"]\n",
+        "output": "[[['C', 1, 1], ['Z', 1, 1], ['A', 1, 0], ['B', 1, 0]], []]"
+      },
+      {
+        "input": "-3 -1\n m \n[[\" M | -3 \", [\"n|-1\"]], \"m|-2\", [\"N|-4\"]]\n",
+        "output": "[[['N', 2, 1], ['M', 2, 0]], [-3, -2]]"
+      },
+      {
+        "input": "10 20\nABC\n[\"D|1\", [\"AbC|20\", [\"d|9\", \"abc|10\"], \"d|15\"]]\n",
+        "output": "[[['D', 3, 2], ['ABC', 2, 0]], [20, 10]]"
+      },
+      {
+        "input": "1 1\nb\n[\"B|2\", [\"b|2\", [\"a|0\"]], \"A|3\", \"C|1\"]\n",
+        "output": "[[['A', 2, 2], ['B', 2, 2], ['C', 1, 0]], [2, 2]]"
+      },
+      {
+        "input": "0 10\nsolo\n[[[[[\" SOLO | +007 \"]]]]]\n",
+        "output": "[[['SOLO', 1, 0]], [7]]"
+      },
+      {
+        "input": "-1 1\ntop\n[\"Z|1\", [\"T|1\", \"A|0\"]]\n",
+        "output": "[[['A', 1, 0], ['T', 1, 0], ['Z', 1, 0]], []]"
+      }
+    ]
   }
 ];
