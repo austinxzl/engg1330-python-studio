@@ -12,6 +12,10 @@ Python runs in a browser worker using Pyodide 0.27.7, downloaded from jsDelivr. 
 
 This is an independent study resource containing original practice questions.
 
+## Interactive lessons
+
+[Start Lecture 2](https://austinxzl.github.io/engg1330-python-studio/#lesson/L2/1) or [browse the eight chapters](https://austinxzl.github.io/engg1330-python-studio/#learn). The 91 lessons pair English and Chinese explanations with editable Python examples. Run the original, change the code or its input and compare the result. **Trace lines** lets you step through a run and inspect local variables and return values. Each chapter ends with a checked output prediction and two practice problems.
+
 ## Timed mock exams
 
 [Open mock exams](https://austinxzl.github.io/engg1330-python-studio/#exams). Each of the five original English papers follows the December 2022 format of 120 minutes and 100 marks.

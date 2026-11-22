@@ -61,8 +61,38 @@
       py.setStderr(capture(stderr));
       self.postMessage({ type: "running" });
       let failure = "";
+      let trace;
       try {
         py.FS.writeFile("main.py", data.code);
+        py.globals.set("_want_trace", Boolean(data.trace));
+        if (data.trace) py.runPython(`
+import json, reprlib
+_steps, _cutoff = [], False
+
+def _watch(frame, event, result):
+    global _cutoff
+    if frame.f_code.co_filename != "main.py":
+        return None
+    if event in ("line", "return", "exception"):
+        if len(_steps) >= 180:
+            _cutoff = True
+            return None
+        variables = {}
+        simple = (str, int, float, bool, list, tuple, dict, set, range, type(None))
+        for name, value in frame.f_locals.items():
+            if not name.startswith("__") and type(value) in simple:
+                variables[name] = reprlib.repr(value)[:100]
+                if len(variables) == 12:
+                    break
+        step = dict(line=frame.f_lineno, scope=frame.f_code.co_name,
+                    event=event, variables=variables)
+        if event == "return" and type(result) in simple:
+            step["returned"] = reprlib.repr(result)[:100]
+        if event == "exception":
+            step["exception"] = result[0].__name__
+        _steps.append(step)
+    return _watch
+`);
         failure = py.runPython(`
 import sys, traceback, tokenize
 def _studio_main():
@@ -70,6 +100,8 @@ def _studio_main():
         with tokenize.open("main.py") as source:
             program = compile(source.read(), "main.py", "exec")
         env = {"__name__": "__main__", "__file__": "main.py"}
+        if _want_trace:
+            sys.settrace(_watch)
         exec(program, env)
     except SystemExit as exc:
         if exc.code not in (None, 0):
@@ -77,17 +109,20 @@ def _studio_main():
     except BaseException as exc:
         return "".join(traceback.format_exception(type(exc), exc, exc.__traceback__.tb_next))
     finally:
+        if _want_trace:
+            sys.settrace(None)
         sys.__stdout__.flush()
         sys.__stderr__.flush()
     return ""
 _studio_main()
         `);
+        if (data.trace) trace = JSON.parse(py.runPython("json.dumps(dict(steps=_steps, limited=_cutoff))"));
       } catch (error) {
         failure = String(error);
       }
       self.postMessage({
         type: "done",
-        result: { output: decode(stdout), error: (decode(stderr) + failure).trim().slice(0, limit) }
+        result: { trace, output: decode(stdout), error: (decode(stderr) + failure).trim().slice(0, limit) }
       });
     };
   }
@@ -101,7 +136,7 @@ _studio_main()
       if (active) active.abort();
     }
 
-    async function run(code, inputs, onStatus = () => {}) {
+    async function run(code, inputs, onStatus = () => {}, {trace = false} = {}) {
       stop();
       const session = new AbortController();
       active = session;
@@ -141,7 +176,7 @@ _studio_main()
             timer = setTimeout(() => finish(null, new Error("Python took too long to load. Check your connection and retry.")), loadTimeout);
             onStatus("loading", index);
             if (session.signal.aborted) return abort();
-            worker.postMessage({ code, input });
+            worker.postMessage({ code, input, trace });
           });
           results.push(result);
         }

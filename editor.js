@@ -36,6 +36,82 @@
     return html + escape(code.slice(position)) + "\n";
   }
 
+  function editorFrame(label, helpId) {
+    return '<div class="ex-code-frame"><div class="ex-gutter" aria-hidden="true"><div></div></div><div class="ex-code-area">' +
+      '<div class="ex-paint" aria-hidden="true"><pre></pre></div>' +
+      '<textarea class="ex-code" wrap="off" spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" aria-label="' +
+      escape(label) + '" aria-describedby="' + escape(helpId) + '"></textarea></div></div>';
+  }
+
+  function attachEditor(root, initial, ui, onEdit) {
+    const find = selector => root.querySelector(selector);
+    const code = find(".ex-code");
+    const paint = find(".ex-paint pre");
+    const gutter = find(".ex-gutter > div");
+    let releaseTab = false;
+    code.value = initial;
+    code.setSelectionRange(ui.start ?? 0, ui.end ?? 0);
+    function alignPaint() {
+      paint.style.transform = 'translate(' + -code.scrollLeft + 'px,' + -code.scrollTop + 'px)';
+      gutter.style.transform = 'translateY(' + -code.scrollTop + 'px)';
+    }
+    function updateEditor(save) {
+      paint.innerHTML = highlight(code.value);
+      gutter.textContent = Array.from({length: code.value.split("\n").length}, (_, i) => i + 1).join("\n");
+      alignPaint();
+      if (save) onEdit(code.value);
+    }
+    updateEditor(false);
+    code.scrollTop = ui.scrollTop ?? 0;
+    code.scrollLeft = ui.scrollLeft ?? 0;
+    alignPaint();
+    code.addEventListener("scroll", () => {
+      ui.scrollTop = code.scrollTop;
+      ui.scrollLeft = code.scrollLeft;
+      alignPaint();
+    });
+    code.addEventListener("input", () => updateEditor(true));
+    const rememberSelection = () => { ui.start = code.selectionStart; ui.end = code.selectionEnd; };
+    code.addEventListener("select", rememberSelection);
+    code.addEventListener("blur", rememberSelection);
+    code.addEventListener("keydown", event => {
+      const {key, shiftKey, metaKey, ctrlKey, altKey} = event;
+      if (key === "Escape") { releaseTab = true; return; }
+      if (releaseTab) { releaseTab = false; if (key === "Tab") return; }
+      if (metaKey || ctrlKey || altKey || event.isComposing || (key !== "Tab" && key !== "Enter")) return;
+      event.preventDefault();
+      const start = code.selectionStart, end = code.selectionEnd;
+      const lineStart = code.value.slice(0, start).lastIndexOf("\n") + 1;
+      if (key === "Enter") {
+        const before = code.value.slice(lineStart, start);
+        const prefix = before.match(/^[ \t]*/)[0] + (before.trimEnd().endsWith(":") ? "    " : "");
+        code.setRangeText("\n" + prefix, start, end, "end");
+      } else if (start === end && !shiftKey) {
+        const width = 4 - ((start - lineStart) % 4);
+        code.setRangeText(" ".repeat(width), start, end, "end");
+      } else {
+        const lastChar = Math.max(start, end - 1);
+        const nextLine = code.value.indexOf("\n", lastChar);
+        const blockEnd = nextLine < 0 ? code.value.length : nextLine;
+        const block = code.value.slice(lineStart, blockEnd);
+        const lines = block.split("\n");
+        const modified = lines.map(line => shiftKey ? line.replace(/^(?: {1,4}|\t)/, "") : "    " + line).join("\n");
+        code.setRangeText(modified, lineStart, blockEnd, "start");
+        if (start === end) {
+          const caret = Math.max(lineStart, start + modified.length - block.length);
+          code.setSelectionRange(caret, caret);
+        } else {
+          code.setSelectionRange(lineStart, lineStart + modified.length);
+        }
+      }
+      rememberSelection();
+      updateEditor(true);
+    });
+    return code;
+  }
+
+  window.PythonEditor = Object.freeze({frame:editorFrame, attach:attachEditor});
+
   window.renderExercise = function renderExercise(q, ctx) {
     const main = document.getElementById("main");
     const ui = ctx.ui || {};
@@ -69,10 +145,7 @@
       '</div></section><section class="ex-solve" aria-label="' + t("Python workspace", "Python 练习区") + '">' +
       '<div class="ex-editor"><div class="ex-editor-bar"><div class="ex-file">' + icon("file") +
       '<span>main.py</span></div><span class="ex-runtime"><i></i>Python 3</span></div>' +
-      '<div class="ex-code-frame"><div class="ex-gutter" aria-hidden="true"><div></div></div><div class="ex-code-area">' +
-      '<div class="ex-paint" aria-hidden="true"><pre></pre></div>' +
-      '<textarea class="ex-code" wrap="off" spellcheck="false" autocapitalize="none" autocorrect="off" autocomplete="off" aria-label="' +
-      t("Python code editor", "Python 代码编辑器") + '" aria-describedby="ex-keys"></textarea></div></div>' +
+      editorFrame(t("Python code editor", "Python 代码编辑器"), "ex-keys") +
       '<div class="ex-actions"><button type="button" class="ex-run">' + icon("run") + t("Run code", "运行代码") +
       '</button><button type="button" class="ex-submit">' + icon("submit") + t("Submit", "提交判题") +
       '</button><button type="button" class="ex-stop" hidden>' + icon("stop") + t("Stop", "停止") + '</button></div></div>' +
@@ -86,42 +159,15 @@
     main.replaceChildren(root);
 
     const find = selector => root.querySelector(selector);
-    const code = find(".ex-code");
-    const paint = find(".ex-paint pre");
-    const gutter = find(".ex-gutter > div");
+    const code = attachEditor(root, ctx.draft ?? q.starter, ui, ctx.saveDraft);
     const stdin = find(".ex-stdin");
     const results = find(".ex-report");
     const runButton = find(".ex-run");
     const submitButton = find(".ex-submit");
     const stopButton = find(".ex-stop");
-    let request = 0, busy = false, releaseTab = false;
-    code.value = ctx.draft ?? q.starter;
+    let request = 0, busy = false;
     stdin.value = ui.stdin ?? sample.input;
-    code.setSelectionRange(ui.start ?? 0, ui.end ?? 0);
 
-    function alignPaint() {
-      paint.style.transform = 'translate(' + -code.scrollLeft + 'px,' + -code.scrollTop + 'px)';
-      gutter.style.transform = 'translateY(' + -code.scrollTop + 'px)';
-    }
-    function updateEditor(save) {
-      paint.innerHTML = highlight(code.value);
-      gutter.textContent = Array.from({length: code.value.split("\n").length}, (_, i) => i + 1).join("\n");
-      alignPaint();
-      if (save) ctx.saveDraft(code.value);
-    }
-    updateEditor(false);
-    code.scrollTop = ui.scrollTop ?? 0;
-    code.scrollLeft = ui.scrollLeft ?? 0;
-    alignPaint();
-    code.addEventListener("scroll", () => {
-      ui.scrollTop = code.scrollTop;
-      ui.scrollLeft = code.scrollLeft;
-      alignPaint();
-    });
-    code.addEventListener("input", () => updateEditor(true));
-    const rememberSelection = () => { ui.start = code.selectionStart; ui.end = code.selectionEnd; };
-    code.addEventListener("select", rememberSelection);
-    code.addEventListener("blur", rememberSelection);
     stdin.addEventListener("input", () => { ui.stdin = stdin.value; });
     root.querySelectorAll("[data-fold]").forEach(details => {
       details.addEventListener("toggle", () => { ui[details.dataset.fold] = details.open; });
@@ -231,38 +277,6 @@
         execute(event.shiftKey);
       }
     });
-    code.addEventListener("keydown", event => {
-      const {key, shiftKey, metaKey, ctrlKey, altKey} = event;
-      if (key === "Escape") { releaseTab = true; return; }
-      if (releaseTab) { releaseTab = false; if (key === "Tab") return; }
-      if (metaKey || ctrlKey || altKey || event.isComposing || (key !== "Tab" && key !== "Enter")) return;
-      event.preventDefault();
-      const start = code.selectionStart, end = code.selectionEnd;
-      const lineStart = code.value.slice(0, start).lastIndexOf("\n") + 1;
-      if (key === "Enter") {
-        const before = code.value.slice(lineStart, start);
-        const prefix = before.match(/^[ \t]*/)[0] + (before.trimEnd().endsWith(":") ? "    " : "");
-        code.setRangeText("\n" + prefix, start, end, "end");
-      } else if (start === end && !shiftKey) {
-        const width = 4 - ((start - lineStart) % 4);
-        code.setRangeText(" ".repeat(width), start, end, "end");
-      } else {
-        const lastChar = Math.max(start, end - 1);
-        const nextLine = code.value.indexOf("\n", lastChar);
-        const blockEnd = nextLine < 0 ? code.value.length : nextLine;
-        const block = code.value.slice(lineStart, blockEnd);
-        const lines = block.split("\n");
-        const modified = lines.map(line => shiftKey ? line.replace(/^(?: {1,4}|\t)/, "") : "    " + line).join("\n");
-        code.setRangeText(modified, lineStart, blockEnd, "start");
-        if (start === end) {
-          const caret = Math.max(lineStart, start + modified.length - block.length);
-          code.setSelectionRange(caret, caret);
-        } else {
-          code.setSelectionRange(lineStart, lineStart + modified.length);
-        }
-      }
-      rememberSelection();
-      updateEditor(true);
-    });
+
   };
 })();

@@ -49,7 +49,7 @@ function theme(u){return '--accent:'+u[6]+';--tint:'+u[7];}
 function setFooter(){document.querySelector('#footnote').textContent=storageOK?t('Progress saved on this device','进度保存在此设备'):t('Device storage unavailable · session only','本地存储不可用，本次会话内有效');}
 function chrome(active){
   document.documentElement.lang=zh?'zh-CN':'en';
-  const navs=[['library','book',t('Practice library','练习题库')],['exams','grid',t('Mock exams','模拟考试')],['progress','chart',t('My progress','学习进度')]];
+  const navs=[['learn','layers',t('Learn','逐章学习')],['library','book',t('Practice library','练习题库')],['exams','grid',t('Mock exams','模拟考试')],['progress','chart',t('My progress','学习进度')]];
   document.querySelector('#nav').innerHTML=navs.map(([id,ic,label])=>'<a href="#'+id+'" '+(active===id?'aria-current="page"':'')+'>'+icon(ic,17)+label+'</a>').join('');
   const lang=document.querySelector('#language');
   lang.innerHTML=icon('translate')+'<span>'+t('中文','English')+'</span>';
@@ -72,7 +72,7 @@ function questionRows(qs){return qs.map((q,i)=>'<a class="qrow" href="#exercise/
 function unitPage(u){
   chrome('library');
   let qs=byUnit(u[0]);
-  main.innerHTML='<a class="crumb" href="#'+(u[0]==='M'?'mixed':'library')+'">'+icon('book',16)+t('Practice library','练习题库')+'</a><section class="unit-intro" style="'+theme(u)+'"><div class="topic-icon">'+icon(u[5],29)+'</div><div class="eyebrow">'+lesson(u)+'</div><h1>'+names(u)+'</h1><p>'+desc(u)+'</p><span class="unit-count">'+solvedCount(qs)+' / '+qs.length+t(' solved',' 已完成')+'</span></section><div class="question-list">'+questionRows(qs)+'</div>';
+  main.innerHTML='<a class="crumb" href="#'+(u[0]==='M'?'mixed':'library')+'">'+icon('book',16)+t('Practice library','练习题库')+'</a><section class="unit-intro" style="'+theme(u)+'"><div class="topic-icon">'+icon(u[5],29)+'</div><div class="eyebrow">'+lesson(u)+'</div><h1>'+names(u)+'</h1><p>'+desc(u)+'</p><span class="unit-count">'+solvedCount(qs)+' / '+qs.length+t(' solved',' 已完成')+'</span>'+(u[0].startsWith('L')?'<a class="learn-unit-link" href="#lesson/'+u[0]+'/1">'+icon('book',16)+t('Learn this chapter','学习这一章')+'</a>':'')+'</section><div class="question-list">'+questionRows(qs)+'</div>';
 }
 function progress(){
   chrome('progress');
@@ -83,7 +83,10 @@ function render(scroll=true){
   if(window.PythonRunner) window.PythonRunner.stop();
   const q=bank.find(q=>q.id===id),u=unitById(id);
   main.className='site-main';
-  if(page==='exams'||page==='exam'){
+  if(page==='learn'||page==='lesson'){
+    chrome('learn');
+    window.Teaching.render(id,location.hash.split('/')[2]);
+  }else if(page==='exams'||page==='exam'){
     chrome('exams');
     window.MockExams.render(page,id,location.hash.split('/')[2]);
   }else if(page==='review'||(page==='unit'&&id==='C')){
@@ -96,7 +99,7 @@ function render(scroll=true){
   }else if(page==='unit'&&u)unitPage(u);
   else if(page==='progress')progress();
   else library(page==='mixed');
-  document.title=(page==='exercise'&&q?(zh?q.titleZh:q.title)+' · ':page==='exams'||page==='exam'?t('Mock exams','模拟考试')+' · ':'')+'PyStudio · ENGG1330';
+  document.title=(page==='exercise'&&q?(zh?q.titleZh:q.title)+' · ':page==='exams'||page==='exam'?t('Mock exams','模拟考试')+' · ':page==='learn'||page==='lesson'?t('Learn Python','逐章学习')+' · ':'')+'PyStudio · ENGG1330';
   if(scroll) window.scrollTo(0,0);
 }
 document.querySelector('#language').onclick=()=>{zh=!zh;save('zh',zh);render(false);};
