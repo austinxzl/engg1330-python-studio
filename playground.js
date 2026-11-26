@@ -2,8 +2,7 @@
   'use strict';
 
   const storageKey = 'playground';
-  const starter = 'message = "Hello, Python!"\nprint(message)\n';
-  const cursor = new WeakMap();
+  const oldStarter = 'message = "Hello, Python!"\nprint(message)\n';
   let project;
   let terminal = {state: 'ready', entry: '', text: ''};
   let stopView = null;
@@ -22,81 +21,147 @@
       names.add(file.name);
       return true;
     });
-    if (!files.length) files.push({name: 'main.py', content: starter});
+    let migrated = false;
+    if (saved && !saved.version) {
+      const mainFile = files.find(file => file.name === 'main.py');
+      if (mainFile?.content === oldStarter) mainFile.content = '';
+      migrated = true;
+    }
+    if (!files.length) files.push({name: 'main.py', content: ''});
     project = {
-      files, active: names.has(saved?.active) ? saved.active : files[0].name,
+      version: 2, files, active: names.has(saved?.active) ? saved.active : files[0].name,
       stdin: typeof saved?.stdin === 'string' ? saved.stdin : ''
     };
+    if (migrated) save(storageKey, project);
   }
 
   function render() {
     openProject();
     const root = document.createElement('section');
     root.className = 'pg-page';
+    root.dataset.consoleExpanded = 'false';
+    root.dataset.mobilePane = 'output';
     root.setAttribute('aria-labelledby', 'pg-title');
     root.innerHTML =
       '<div class="pg-head"><div><h1 id="pg-title">' + t('Python playground', 'Python 自由编程') +
-      '</h1><p>' + t('Write Python in the editor, then press Run to see the output.',
-        '在编辑区写 Python，点「运行」就能看到输出。') +
-      '</p></div><div class="pg-head-actions"><button type="button" data-action="download">' +
-      t('Download file', '下载当前文件') + '</button></div></div>' +
+      '</h1></div><div class="pg-head-actions"><button type="button" data-action="help">' +
+      icon('book', 15) + t('Quick guide', '使用说明') + '</button><button type="button" data-action="download">' +
+      t('Download file', '下载文件') + '</button></div></div>' +
       '<div class="pg-layout"><details class="pg-files"><summary>' + icon('folder') +
       t('Files', '文件') + '</summary><div><div class="pg-files-bar"><button type="button" data-action="new">' +
       t('+ New file', '＋ 新建文件') + '</button></div><div class="pg-file-list"></div>' +
       '<div class="pg-file-actions"><button type="button" data-action="rename">' + t('Rename', '重命名') +
       '</button><button type="button" data-action="delete">' + t('Delete', '删除') +
       '</button></div></div></details>' +
-      '<div class="pg-workbench ex-workspace"><div class="pg-tabs" role="tablist" aria-label="' +
-      t('Open files', '已打开的文件') + '"></div><div class="pg-editor" role="tabpanel" id="pg-panel"></div>' +
-      '<div class="pg-toolbar"><button type="button" class="pg-run" data-action="run">' + icon('play') +
-      t('Run', '运行') + '</button><button type="button" class="pg-stop" data-action="stop" hidden>' +
-      t('Stop', '停止') + '</button><span class="pg-note pg-shortcut">Ctrl / ⌘ + Enter</span></div>' +
-      '<section class="pg-console"><div class="pg-console-head"><h2>' + t('Output', '输出') +
-      '</h2><span class="pg-status" role="status"></span><button type="button" data-action="clear">' +
-      t('Clear', '清空输出') + '</button></div><pre class="pg-terminal" tabindex="0" aria-label="' +
-      t('Program output', '程序输出') + '"></pre><button type="button" class="pg-secondary pg-jump" data-action="jump" hidden>' +
-      t('Go to error line', '跳到出错行') + '</button><div class="pg-console-input"><label for="pg-stdin">' +
-      t('Input for input()', '程序输入 input()') + '</label><textarea id="pg-stdin" rows="2" spellcheck="false" placeholder="' +
-      t('Before running, enter one value per line.', '运行前在这里填好，每次 input() 读一行。') +
-      '"></textarea></div></section></div></div>' +
-      '<details class="pg-help"><summary>' + icon('book') + t('How to use the playground', '第一次使用？') +
-      '</summary><ol id="pg-guide"><li>' +
-      t('Write in the dark editor. Use print("Hello") to see a value in Output.',
-        '在深色编辑区写代码。想看一个值，就写 print("Hello")，再点「运行」。') + '</li><li>' +
-      t('For name = input(), type a name in the input box before you run. Each input() reads the next line.',
-        '如果写了 name = input()，先在「程序输入」里填一个名字。每次 input() 会读下一行。') + '</li><li>' +
-      t('To start with a blank page, open Files and choose New file. Files and input are saved in this browser. Download a file to keep a copy.',
-        '想从空白开始，打开「文件」并点「新建文件」。代码和输入会保存在这个浏览器里，也可以下载文件留一份副本。') + '</li><li>' +
-      t('Run the selected .py file with Ctrl / ⌘ + Enter. Press Esc then Tab to move out of the editor.',
-        '按 Ctrl / ⌘ + Enter 运行当前 .py 文件。按 Esc 再按 Tab 可以离开编辑区。') +
-      '</li></ol></details><dialog class="pg-file-dialog" aria-labelledby="pg-dialog-title"></dialog>';
+      '<div class="pg-workbench ex-workspace"><div class="pg-editor-bar"><div class="pg-tabs" role="tablist" aria-label="' +
+      t('Open files', '已打开的文件') + '"></div>' +
+      '<div class="pg-toolbar"><button type="button" class="pg-run" data-action="run" title="Ctrl / ⌘ + Enter">' +
+      icon('play') + t('Run', '运行') + '</button><button type="button" class="pg-stop" data-action="stop" hidden>' +
+      t('Stop', '停止') + '</button></div></div><div class="pg-editor" role="tabpanel" id="pg-panel"></div>' +
+      '<div class="pg-splitter" role="separator" tabindex="0" aria-orientation="horizontal" aria-controls="pg-panel pg-console" ' +
+      'aria-label="' + t('Adjust editor and console height', '调整编辑区和控制台高度') +
+      '" aria-valuemin="22" aria-valuemax="70" title="' + t('Drag to resize, or use the arrow keys', '拖动或用方向键调整高度') + '"></div>' +
+      '<section class="pg-console" id="pg-console"><div class="pg-console-head"><h2>' + t('Console', '控制台') +
+      '</h2><span class="pg-status" role="status"></span><button type="button" data-action="expand" aria-pressed="false"></button></div>' +
+      '<div class="pg-io-tabs" role="group" aria-label="' + t('Console view', '控制台视图') + '">' +
+      '<button type="button" data-pane="input">' + t('Input', '输入') + '</button><button type="button" data-pane="output">' +
+      t('Output', '输出') + '</button></div><div class="pg-io-grid"><div class="pg-console-input"><label for="pg-stdin">' +
+      t('Input', '输入') + '</label><textarea id="pg-stdin" spellcheck="false" autocapitalize="off" placeholder="' +
+      t('One line for each input() call', '每次 input() 读一行，在运行前填好') +
+      '"></textarea></div><div class="pg-console-output"><div class="pg-output-label"><h3>' + t('Output', '输出') +
+      '</h3><button type="button" class="pg-jump" data-action="jump" hidden>' + t('Go to error line', '跳到出错行') +
+      '</button><button type="button" data-action="clear">' + t('Clear', '清空') + '</button></div>' +
+      '<pre class="pg-terminal" tabindex="0" aria-label="' + t('Program output', '程序输出') +
+      '"></pre></div></div></section></div></div>' +
+      '<dialog class="pg-help-dialog pg-file-dialog" aria-labelledby="pg-help-title"><h2 id="pg-help-title">' +
+      t('Quick guide', '使用说明') + '</h2><ol><li>' +
+      t('Write Python in main.py and press Run or Ctrl / ⌘ + Enter.', '在 main.py 里写 Python，点「运行」或按 Ctrl / ⌘ + Enter。') +
+      '</li><li>' + t('For input(), enter one value per line in Input before running. Each print() appears in Output.',
+        '每次 input() 读一行，运行前在「输入」里填好。print() 打印的内容会显示在「输出」。') +
+      '</li><li>' + t('Drag the divider to resize. Choose Expand console to use the whole window for input and output.',
+        '拖动分隔线可以调整高度。点「展开控制台」可用整个窗口看输入和输出。') +
+      '</li><li>' + t('Your files are saved in this browser. Use Files to create a script or Download file to save a copy.',
+        '文件自动保存在这个浏览器里。可以在「文件」中新建脚本，也可以点「下载文件」留副本。') +
+      '</li></ol><form method="dialog" class="pg-dialog-actions"><button type="submit">' + t('Close', '关闭') +
+      '</button></form></dialog><dialog class="pg-file-dialog pg-manage-dialog" aria-labelledby="pg-dialog-title"></dialog>';
     main.replaceChildren(root);
     const find = selector => root.querySelector(selector);
     const editorHost = find('.pg-editor');
     const stdin = find('#pg-stdin');
     const terminalNode = find('.pg-terminal');
-    const dialog = find('dialog');
+    const dialog = find('.pg-manage-dialog');
+    const help = find('.pg-help-dialog');
     const filesPanel = find('.pg-files');
-    filesPanel.open = !window.matchMedia('(max-width:720px)').matches;
+    const narrow = window.matchMedia('(max-width:720px)');
+    const resizeFiles = () => { filesPanel.open = !narrow.matches; };
+    const closeMobileFiles = () => { if (narrow.matches) filesPanel.open = false; };
+    resizeFiles();
+    narrow.addEventListener('change', resizeFiles);
+    root.addEventListener('pointerdown', event => {
+      if (!filesPanel.contains(event.target) && !dialog.open) closeMobileFiles();
+    }, true);
     const activeFile = () => project.files.find(file => file.name === project.active);
     const persist = () => save(storageKey, project);
-    const editors = new Map();
-    let visibleFrame;
+    const editor = window.createPlaygroundEditor(editorHost, persist);
     let busy = false;
-    let editor;
     let runId = 0;
     let displayFrame = 0;
     stdin.value = project.stdin;
     stdin.addEventListener('input', () => { project.stdin = stdin.value; persist(); });
 
+    function selectPane(pane) {
+      root.dataset.mobilePane = pane;
+      for (const button of root.querySelectorAll('[data-pane]'))
+        button.setAttribute('aria-pressed', String(button.dataset.pane === pane));
+    }
+
+    function setExpanded(expanded) {
+      root.dataset.consoleExpanded = String(expanded);
+      const button = find('[data-action="expand"]');
+      button.setAttribute('aria-pressed', String(expanded));
+      button.textContent = expanded ? t('Restore split view', '恢复分屏') : t('Expand console', '展开控制台');
+    }
+
+    const splitter = find('.pg-splitter');
+    const workbench = find('.pg-workbench');
+    let share = Number(read('playground-editor-share', 40));
+    function setShare(value) {
+      share = Number.isFinite(value) ? Math.min(70, Math.max(22, Math.round(value))) : 40;
+      root.style.setProperty('--pg-editor-share', share + '%');
+      splitter.setAttribute('aria-valuenow', String(share));
+      splitter.setAttribute('aria-valuetext', t('Editor ', '编辑区 ') + share + '%');
+    }
+    setShare(share);
+    let drag;
+    splitter.addEventListener('pointerdown', event => {
+      if (event.button !== 0 || drag) return;
+      drag = {id: event.pointerId, start: event.clientY, share, height: workbench.clientHeight};
+      splitter.setPointerCapture(event.pointerId);
+      root.classList.add('pg-resizing');
+      event.preventDefault();
+    });
+    splitter.addEventListener('pointermove', event => {
+      if (drag && drag.id === event.pointerId)
+        setShare(drag.share + 100 * (event.clientY - drag.start) / Math.max(1, drag.height));
+    });
+    splitter.addEventListener('lostpointercapture', () => {
+      if (!drag) return;
+      drag = null;
+      root.classList.remove('pg-resizing');
+      save('playground-editor-share', share);
+    });
+    splitter.addEventListener('keydown', event => {
+      const values = {ArrowUp: share - 5, ArrowDown: share + 5, Home: 22, End: 70};
+      if (!Object.hasOwn(values, event.key)) return;
+      event.preventDefault();
+      setShare(values[event.key]);
+      save('playground-editor-share', share);
+    });
+    splitter.addEventListener('dblclick', () => { setShare(40); save('playground-editor-share', share); });
+
     function drawFiles() {
       const list = find('.pg-file-list'), tabs = find('.pg-tabs');
-      for (const [file, frame] of editors) {
-        if (!project.files.includes(file)) {
-          frame.remove();
-          editors.delete(file);
-        }
-      }
+      editor.forgetRemoved(project.files);
       const tabScroll = tabs.scrollLeft;
       list.replaceChildren();
       tabs.replaceChildren();
@@ -136,36 +201,12 @@
       find('[data-action="delete"]').disabled = project.files.length < 2;
     }
 
-    function showEditor() {
-      const file = activeFile();
-      const label = t('Code editor for ', '代码编辑器：') + file.name;
-      let frame = editors.get(file);
-      if (visibleFrame && visibleFrame !== frame) visibleFrame.hidden = true;
-      if (!frame || frame.querySelector('.ex-code').value !== file.content) {
-        if (frame) frame.remove();
-        editorHost.insertAdjacentHTML('beforeend', window.PythonEditor.frame(label, 'pg-guide'));
-        frame = editorHost.lastElementChild;
-        if (!cursor.has(file)) cursor.set(file, {});
-        editor = window.PythonEditor.attach(frame, file.content, cursor.get(file), value => {
-          file.content = value;
-          persist();
-        });
-        editors.set(file, frame);
-      } else {
-        frame.hidden = false;
-        editor = frame.querySelector('.ex-code');
-        editor.setAttribute('aria-label', label);
-      }
-      visibleFrame = frame;
-      editorHost.dataset.kind = /\.py$/i.test(file.name) ? 'python' : 'text';
-    }
-
     function selectFile(name) {
       if (!project.files.some(file => file.name === name)) return;
       project.active = name;
       persist();
       drawFiles();
-      showEditor();
+      editor.open(activeFile());
       drawTerminal();
     }
 
@@ -192,13 +233,12 @@
       find('.pg-run').disabled = busy || !/\.py$/i.test(project.active);
       find('.pg-stop').hidden = !busy;
       find('[data-action="clear"]').disabled = busy || terminal.state === 'ready';
-      find('.pg-shortcut').textContent = /\.py$/i.test(project.active) ? 'Ctrl / ⌘ + Enter' :
+      find('.pg-run').title = /\.py$/i.test(project.active) ? 'Ctrl / ⌘ + Enter' :
         t('Select a .py file to run it.', '选择一个 .py 文件即可运行。');
     }
 
     function mergeWrites(changes, before, original) {
       let changed = false;
-      const previous = activeFile();
       for (const [name, content] of Object.entries(changes || {})) {
         if (!validName(name) || (content !== null && typeof content !== 'string')) continue;
         const existing = project.files.find(file => file.name === name);
@@ -216,7 +256,7 @@
       if (!activeFile()) project.active = project.files[0].name;
       persist();
       drawFiles();
-      if (editor.value !== activeFile().content || previous !== activeFile()) showEditor();
+      editor.open(activeFile());
     }
 
     function stop() {
@@ -235,6 +275,7 @@
       const entry = project.active;
       const original = new Map(project.files.map(file => [file.name, file]));
       const before = Object.assign(Object.create(null), Object.fromEntries(project.files.map(file => [file.name, file.content])));
+      selectPane('output');
       terminal = {state: 'loading', entry, text: ''};
       busy = true;
       drawTerminal();
@@ -322,6 +363,7 @@
           project.active = name;
         }
         dialog.close();
+        closeMobileFiles();
         selectFile(project.active);
         editor.focus();
       };
@@ -330,12 +372,16 @@
     root.addEventListener('click', event => {
       const button = event.target.closest('button');
       if (!button || button.disabled) return;
+      if (button.dataset.pane) { selectPane(button.dataset.pane); return; }
       if (button.dataset.file !== undefined) {
         selectFile(button.dataset.file);
+        closeMobileFiles();
         find('.pg-tab[aria-selected="true"]').focus({preventScroll: true});
         return;
       }
       switch (button.dataset.action) {
+        case 'help': help.showModal(); break;
+        case 'expand': setExpanded(root.dataset.consoleExpanded !== 'true'); break;
         case 'run': run(); break;
         case 'stop': stop(); break;
         case 'clear': terminal = {state: 'ready', entry: '', text: ''}; drawTerminal(); break;
@@ -344,13 +390,9 @@
         case 'jump': {
           const frame = errorLine();
           if (!frame) break;
+          setExpanded(false);
           selectFile(frame[1]);
-          const line = Math.min(Number(frame[2]), editor.value.split('\n').length) - 1;
-          const lines = editor.value.split('\n');
-          const start = lines.slice(0, line).reduce((pos, value) => pos + value.length + 1, 0);
-          editor.focus();
-          editor.setSelectionRange(start, start + lines[line].length);
-          editor.scrollTop = Math.max(0, (line - 3) * parseFloat(getComputedStyle(editor).lineHeight));
+          editor.goToLine(Number(frame[2]));
           break;
         }
         case 'download': {
@@ -366,10 +408,14 @@
       }
     });
     root.addEventListener('keydown', event => {
-      if (dialog.open || event.isComposing) return;
+      if (dialog.open || help.open || event.isComposing) return;
       if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
         event.preventDefault();
+        event.stopPropagation();
         run();
+      } else if (event.key === 'Escape' && root.dataset.consoleExpanded === 'true') {
+        setExpanded(false);
+        find('[data-action="expand"]').focus();
       } else if (event.target.matches('.pg-tab') && ['ArrowRight','ArrowLeft','Home','End'].includes(event.key)) {
         event.preventDefault();
         const files = project.files;
@@ -379,14 +425,20 @@
         selectFile(files[next].name);
         find('.pg-tab[aria-selected="true"]').focus();
       }
-    });
+    }, true);
+    setExpanded(false);
+    selectPane('output');
     drawFiles();
-    showEditor();
+    editor.open(activeFile());
+    editor.load();
     drawTerminal();
     stopView = () => {
       stop();
       cancelAnimationFrame(displayFrame);
       if (dialog.open) dialog.close();
+      if (help.open) help.close();
+      narrow.removeEventListener('change', resizeFiles);
+      editor.dispose();
     };
   }
 

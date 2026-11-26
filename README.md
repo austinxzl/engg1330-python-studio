@@ -14,7 +14,9 @@ This is an independent study resource containing original practice questions.
 
 ## Python playground
 
-Open the [Python playground](https://austinxzl.github.io/engg1330-python-studio/#playground), edit `main.py` and press **Run** or **Ctrl / ⌘ + Enter**. For a program that calls `input()`, enter one value per line in the input box before running. Click **Go to error line** to find the statement Python reported.
+The [Python playground](https://austinxzl.github.io/engg1330-python-studio/#playground) opens with a blank `main.py` on your first visit and uses Microsoft's Monaco Editor. Write Python and press **Run** or **Ctrl / ⌘ + Enter**. Enter one line in **Input** for each `input()` call before running. Results appear in **Output**. Click **Go to error line** to jump to a reported error.
+
+Drag the horizontal divider to resize the editor and console. **Expand console** gives input and output the full workspace. On a phone, tap **Input** or **Output** to switch panes.
 
 Use **Files** to start a blank script, import a helper module or add text data for `open()`. Programs can create and update workspace text files. This browser saves your files and input between visits. **Download file** saves the selected file to your computer.
 
@@ -34,4 +36,4 @@ Each passing programming case earns 2 marks. Learners can run the visible sample
 
 ## Run locally
 
-Open `index.html` in Chrome, or run `python3 -m http.server 8000` from this directory and open `http://localhost:8000`. The Python runtime requires an internet connection on first use.
+Run `python3 -m http.server 8000` from this directory and open `http://localhost:8000`. The editor assets are served locally. The Python runtime requires an internet connection on first use.

@@ -1,0 +1,8 @@
+Monaco Editor 0.58.0 by Microsoft Corporation.
+https://github.com/microsoft/monaco-editor
+The JavaScript and CSS bundle selected editor and Python modules from the official npm release. See LICENSE and ThirdPartyNotices.txt.
+
+Visual Studio Code Codicons by Microsoft Corporation and contributors.
+https://github.com/microsoft/vscode-codicons
+The icon font is distributed under the Creative Commons Attribution 4.0 International license.
+https://creativecommons.org/licenses/by/4.0/
