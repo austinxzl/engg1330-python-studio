@@ -49,7 +49,7 @@ function theme(u){return '--accent:'+u[6]+';--tint:'+u[7];}
 function setFooter(){document.querySelector('#footnote').textContent=storageOK?t('Progress saved on this device','进度保存在此设备'):t('Device storage unavailable · session only','本地存储不可用，本次会话内有效');}
 function chrome(active){
   document.documentElement.lang=zh?'zh-CN':'en';
-  const navs=[['learn','layers',t('Learn','逐章学习')],['library','book',t('Practice library','练习题库')],['exams','grid',t('Mock exams','模拟考试')],['progress','chart',t('My progress','学习进度')]];
+  const navs=[['learn','layers',t('Learn','逐章学习')],['library','book',t('Practice library','练习题库')],['playground','code',t('Playground','自由编程')],['exams','grid',t('Mock exams','模拟考试')],['progress','chart',t('My progress','学习进度')]];
   document.querySelector('#nav').innerHTML=navs.map(([id,ic,label])=>'<a href="#'+id+'" '+(active===id?'aria-current="page"':'')+'>'+icon(ic,17)+label+'</a>').join('');
   const lang=document.querySelector('#language');
   lang.innerHTML=icon('translate')+'<span>'+t('中文','English')+'</span>';
@@ -80,10 +80,14 @@ function progress(){
 }
 function render(scroll=true){
   const [page,id]=location.hash.slice(1).split('/');
+  window.Playground.leave();
   if(window.PythonRunner) window.PythonRunner.stop();
   const q=bank.find(q=>q.id===id),u=unitById(id);
   main.className='site-main';
-  if(page==='learn'||page==='lesson'){
+  if(page==='playground'){
+    chrome('playground');
+    window.Playground.render();
+  }else if(page==='learn'||page==='lesson'){
     chrome('learn');
     window.Teaching.render(id,location.hash.split('/')[2]);
   }else if(page==='exams'||page==='exam'){
@@ -99,7 +103,7 @@ function render(scroll=true){
   }else if(page==='unit'&&u)unitPage(u);
   else if(page==='progress')progress();
   else library(page==='mixed');
-  document.title=(page==='exercise'&&q?(zh?q.titleZh:q.title)+' · ':page==='exams'||page==='exam'?t('Mock exams','模拟考试')+' · ':page==='learn'||page==='lesson'?t('Learn Python','逐章学习')+' · ':'')+'PyStudio · ENGG1330';
+  document.title=(page==='playground'?t('Python playground','Python 自由编程')+' · ':page==='exercise'&&q?(zh?q.titleZh:q.title)+' · ':page==='exams'||page==='exam'?t('Mock exams','模拟考试')+' · ':page==='learn'||page==='lesson'?t('Learn Python','逐章学习')+' · ':'')+'PyStudio · ENGG1330';
   if(scroll) window.scrollTo(0,0);
 }
 document.querySelector('#language').onclick=()=>{zh=!zh;save('zh',zh);render(false);};

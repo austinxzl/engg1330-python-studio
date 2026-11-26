@@ -70,7 +70,18 @@
       ui.scrollLeft = code.scrollLeft;
       alignPaint();
     });
-    code.addEventListener("input", () => updateEditor(true));
+    let formatting = false;
+    code.addEventListener("input", () => { if (!formatting) updateEditor(true); });
+    function insertEdit(value, start, end) {
+      code.setSelectionRange(start, end);
+      // insertText joins the browser's undo stack, including a generated indentation.
+      formatting = true;
+      try {
+        if (!document.execCommand?.("insertText", false, value)) code.setRangeText(value, start, end, "end");
+      } finally {
+        formatting = false;
+      }
+    }
     const rememberSelection = () => { ui.start = code.selectionStart; ui.end = code.selectionEnd; };
     code.addEventListener("select", rememberSelection);
     code.addEventListener("blur", rememberSelection);
@@ -85,10 +96,10 @@
       if (key === "Enter") {
         const before = code.value.slice(lineStart, start);
         const prefix = before.match(/^[ \t]*/)[0] + (before.trimEnd().endsWith(":") ? "    " : "");
-        code.setRangeText("\n" + prefix, start, end, "end");
+        insertEdit("\n" + prefix, start, end);
       } else if (start === end && !shiftKey) {
         const width = 4 - ((start - lineStart) % 4);
-        code.setRangeText(" ".repeat(width), start, end, "end");
+        insertEdit(" ".repeat(width), start, end);
       } else {
         const lastChar = Math.max(start, end - 1);
         const nextLine = code.value.indexOf("\n", lastChar);
@@ -96,7 +107,7 @@
         const block = code.value.slice(lineStart, blockEnd);
         const lines = block.split("\n");
         const modified = lines.map(line => shiftKey ? line.replace(/^(?: {1,4}|\t)/, "") : "    " + line).join("\n");
-        code.setRangeText(modified, lineStart, blockEnd, "start");
+        insertEdit(modified, lineStart, blockEnd);
         if (start === end) {
           const caret = Math.max(lineStart, start + modified.length - block.length);
           code.setSelectionRange(caret, caret);
